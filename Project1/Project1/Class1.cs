@@ -323,6 +323,7 @@ namespace BaldiAP
                     notebook_obtained = 0;
                     items_obtained = new List<Items>();
                     doors_obtained = new List<string>();
+                    door_list = new List<Door>();
                     myLockedDoors = new Dictionary<string, Door>();
                     items_queue = new List<Items>();
                     item_list = new Dictionary<Items, ItemObject>();
@@ -521,6 +522,8 @@ namespace BaldiAP
             {
                 item_list = new Dictionary<Items, ItemObject>();
                 items_queue = new List<Items>(items_obtained);
+                door_list = new List<Door>();
+                myLockedDoors = new Dictionary<string, Door>();
                 run_removed_notebooks = 0;
             }
             if (GameObject.FindObjectOfType<MainMenu>() != null)
@@ -562,8 +565,26 @@ namespace BaldiAP
             
             harmony.Patch(AccessTools.Method(typeof(ITM_Scissors), nameof(ITM_Scissors.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Scissors_Patch_Use))));
             
+            harmony.Patch(AccessTools.Method(typeof(ITM_Quarter), nameof(ITM_Quarter.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Quarter_Patch_Use))));
+            
             harmony.Patch(AccessTools.Method(typeof(StandardDoor), nameof(StandardDoor.InsertItem)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(StandardDoor_InsertItem_Patch))));
-
+            
+            harmony.Patch(AccessTools.Method(typeof(ITM_NoSquee), nameof(ITM_NoSquee.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(NoSquee_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_BSODA), nameof(ITM_BSODA.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Bsoda_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_ZestyBar), nameof(ITM_ZestyBar.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(ZestyBar_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_AlarmClock), nameof(ITM_AlarmClock.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Clock_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_Boots), nameof(ITM_Boots.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Boots_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_SwingDoorLock), nameof(ITM_SwingDoorLock.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Lock_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_Tape), nameof(ITM_Tape.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Tape_Patch_Use))));
+        
+            harmony.Patch(AccessTools.Method(typeof(ITM_Acceptable), nameof(ITM_Acceptable.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(ITM_Acceptor_Use_Patch))));
+        
         }
 
         public static void StandardDoor_InsertItem_Patch(StandardDoor __instance, PlayerManager player, EnvironmentController ec)
@@ -573,7 +594,93 @@ namespace BaldiAP
 
         public static void ITM_Acceptor_Use_Patch(ITM_Acceptable __instance, PlayerManager pm)
         {
+            RaycastHit hits;
+            if (Physics.Raycast(pm.transform.position, Singleton<CoreGameManager>.Instance.GetCamera(pm.playerNumber).transform.forward, out hits, pm.pc.reach, pm.pc.ClickLayers))
+            {
+                foreach (IItemAcceptor itemAcceptor in hits.transform.GetComponents<IItemAcceptor>())
+                {
+                    if (itemAcceptor != null && Traverse.Create(__instance).Field("item").GetValue<Items>() == Items.DetentionKey && itemAcceptor.ItemFits(Traverse.Create(__instance).Field("item").GetValue<Items>()))
+                    {
+                        Plugin.ap_session.Locations.CompleteLocationChecksAsync(72);
+                    }
+                }
+            }
+        }
 
+        public static void Tape_Patch_Use(ITM_Tape __instance, PlayerManager pm)
+        {
+            RaycastHit hits;
+            if (Physics.Raycast(pm.transform.position, Singleton<CoreGameManager>.Instance.GetCamera(pm.playerNumber).transform.forward, out hits, pm.pc.reach, pm.pc.ClickLayers))
+            {
+                IItemAcceptor component = hits.transform.GetComponent<IItemAcceptor>();
+                if (component != null && component.ItemFits(Items.Tape))
+                {
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(75);
+                }
+            }
+        }
+
+        public static void Lock_Patch_Use(ITM_SwingDoorLock __instance, PlayerManager pm)
+        {
+            RaycastHit hits;
+            if (Physics.Raycast(pm.transform.position, Singleton<CoreGameManager>.Instance.GetCamera(pm.playerNumber).transform.forward, out hits, pm.pc.reach, pm.pc.ClickLayers))
+            {
+                IItemAcceptor component = hits.transform.GetComponent<IItemAcceptor>();
+                if (component != null && component.ItemFits(Items.DoorLock))
+                {
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(76);
+                }
+            }
+        }
+
+        public static void Boots_Patch_Use(ITM_Boots __instance, PlayerManager pm)
+        {
+            Plugin.ap_session.Locations.CompleteLocationChecksAsync(79);
+        }
+
+        public static void Clock_Patch_Use(ITM_AlarmClock __instance, PlayerManager pm)
+        {
+            Plugin.ap_session.Locations.CompleteLocationChecksAsync(77);
+        }
+
+        public static void ZestyBar_Patch_Use(ITM_ZestyBar __instance, PlayerManager pm)
+        {
+            Plugin.ap_session.Locations.CompleteLocationChecksAsync(73);
+        }
+
+        public static void NoSquee_Patch_Use(ITM_NoSquee __instance, PlayerManager pm)
+        {
+            RaycastHit hits;
+            if (Physics.Raycast(pm.transform.position, Singleton<CoreGameManager>.Instance.GetCamera(pm.playerNumber).transform.forward, out hits, pm.pc.reach, pm.pc.ClickLayers))
+            {
+                if (hits.transform.tag == "StandardDoor")
+                {
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(78);
+                }
+                IItemAcceptor component2 = hits.transform.GetComponent<IItemAcceptor>();
+                if (component2 != null && component2.ItemFits(Items.Wd40))
+                {
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(78);
+                }
+            }
+        }
+
+        public static void Quarter_Patch_Use(ITM_Quarter __instance, PlayerManager pm)
+        {
+            RaycastHit hits;
+            if (Physics.Raycast(pm.transform.position, Singleton<CoreGameManager>.Instance.GetCamera(pm.playerNumber).transform.forward, out hits, pm.pc.reach, pm.pc.ClickLayers))
+            {
+                IItemAcceptor component = hits.transform.GetComponent<IItemAcceptor>();
+                if (component != null && component.ItemFits(Items.Quarter))
+                {
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(80);
+                }
+            }
+        }
+
+        public static void Bsoda_Patch_Use(ITM_BSODA __instance, PlayerManager pm)
+        {
+            Plugin.ap_session.Locations.CompleteLocationChecksAsync(74);
         }
 
         public static void Scissors_Patch_Use(ITM_Scissors __instance, PlayerManager pm)
