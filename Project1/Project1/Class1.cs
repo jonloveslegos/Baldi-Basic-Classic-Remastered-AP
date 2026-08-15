@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
@@ -15,6 +16,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Networking.Types;
 using UnityEngine.UI;
@@ -32,7 +34,9 @@ namespace BaldiAP
         public static ArchipelagoSession ap_session;
         static string ap_ip = "";
         static string ap_port = "";
-        static string ap_slot = "";
+        public static DeathLinkService deathLinkService;
+        public static string ap_slot = "";
+        public static bool is_deathlinked = false;
         static string ap_pass = "";
         static float connect_timer = 0;
         public static int run_removed_notebooks = 0;
@@ -43,6 +47,8 @@ namespace BaldiAP
         public static Dictionary<string, SoundObject> sound_list = new Dictionary<string, SoundObject>();
         public static List<Door> door_list = new List<Door>();
         public static Dictionary<string, Door> myLockedDoors = new Dictionary<string, Door>();
+        public static Dictionary<string, Elevator> myLockedExits = new Dictionary<string, Elevator>();
+        public static Dictionary<string, long> option_values = new Dictionary<string, long>();
         public static List<string> doors_obtained = new List<string>();
 
         public void Get_Ap_Info()
@@ -192,18 +198,22 @@ namespace BaldiAP
                 }
                 else if (itemReceivedID == 37)
                 {
+                    doors_obtained.Add("45, 0, 225");
                     doors_obtained.Add("Door_Swinging(Clone) - 55, 0, 225 - Room0_Hallway");
                 }
                 else if (itemReceivedID == 38)
                 {
+                    doors_obtained.Add("135, 0, 385");
                     doors_obtained.Add("Door_Swinging(Clone) - 135, 0, 375 - Room14_Cafeteria");
                 }
                 else if (itemReceivedID == 35)
                 {
+                    doors_obtained.Add("305, 0, 215");
                     doors_obtained.Add("Door_Swinging(Clone) - 295, 0, 215 - Room0_Hallway");
                 }
                 else if (itemReceivedID == 36)
                 {
+                    doors_obtained.Add("175, 0, 15");
                     doors_obtained.Add("Door_Swinging(Clone) - 175, 0, 25 - Room0_Hallway");
                 }
                 else if (itemReceivedID == 39)
@@ -314,6 +324,17 @@ namespace BaldiAP
         public void Update()
         {
             var connect_status = "Connected! Launch Classic Style to play";
+            if (MyPatches.lockedStandard == null)
+            {
+                foreach (var mat in Resources.FindObjectsOfTypeAll<Material>())
+                {
+                    if (mat.name == "DoorTexture_Closed")
+                    {
+                        MyPatches.lockedStandard = mat;
+                        break;
+                    }
+                }
+            }
             if (ap_session.ConnectionInfo.Slot == -1)
             {
                 connect_status = "FAILED TO CONNECT!";
@@ -323,8 +344,11 @@ namespace BaldiAP
                     notebook_obtained = 0;
                     items_obtained = new List<Items>();
                     doors_obtained = new List<string>();
+                    is_deathlinked = false;
+                    option_values = new Dictionary<string, long>();
                     door_list = new List<Door>();
                     myLockedDoors = new Dictionary<string, Door>();
+                    myLockedExits = new Dictionary<string, Elevator>();
                     items_queue = new List<Items>();
                     item_list = new Dictionary<Items, ItemObject>();
                     var result = ap_session.TryConnectAndLogin(game: "Baldis Basics Classic Remastered", name: ap_slot, itemsHandlingFlags: ItemsHandlingFlags.AllItems);
@@ -347,6 +371,33 @@ namespace BaldiAP
                     else
                     {
                         Logger.LogMessage("Connected Successfully");
+                        foreach (var item in ap_session.DataStorage.GetSlotData(slot: Plugin.ap_session.Players.ActivePlayer.Slot))
+                        {
+                            // Logger.LogMessage(item.Key + "  :::  "+(long)item.Value);
+                            option_values.Add(item.Key, (long)item.Value);
+                        }
+                        if (option_values["death_link"] == 1)
+                        {
+                            deathLinkService = ap_session.CreateDeathLinkService();
+                            deathLinkService.OnDeathLinkReceived += (deathLinkObject) =>
+                            {
+                                Logger.LogMessage(deathLinkObject.Cause);
+                                if (ap_session.ConnectionInfo.Slot != -1)
+                                {
+                                    if (GameObject.FindObjectOfType<ClassicGameManager>() != null)
+                                    {
+                                        if (Singleton<CoreGameManager>.Instance.GetPlayer(0) != null)
+                                        {
+                                            var environment_controller = GameObject.FindObjectOfType<EnvironmentController>();
+                                            is_deathlinked = true;
+                                            environment_controller.GetBaldi().GetAngry(20);
+                                        }
+                                    }
+                                }
+                            };
+
+                            deathLinkService.EnableDeathLink();
+                        }
                     }
                 }
                 else
@@ -361,6 +412,17 @@ namespace BaldiAP
                     var player_itm_manager = Singleton<CoreGameManager>.Instance.GetPlayer(0).itm;
                     var classic_game_manager = GameObject.FindObjectOfType<ClassicGameManager>();
                     var environment_controller = GameObject.FindObjectOfType<EnvironmentController>();
+                    if (is_deathlinked)
+                    {
+                        if (environment_controller.GetBaldi() != null)
+                        {
+                            var baldman = environment_controller.GetBaldi();
+                            baldman.PlayerInSight(Singleton<CoreGameManager>.Instance.GetPlayer(0));
+                            baldman.baseSpeed = 500;
+                            baldman.GetAngry(0f);
+                            baldman.ManualSlap();
+                        }
+                    }
                     if (item_list.Count <= 6)
                     {
                         var to_test_list = Resources.FindObjectsOfTypeAll<ItemObject>();
@@ -429,97 +491,111 @@ namespace BaldiAP
                         AccessTools.Field(typeof(SodaMachine), "item").SetValue(soda, player_itm_manager.nothing);
                         AccessTools.Field(typeof(SodaMachine), "potentialItems").SetValue(soda, new WeightedItemObject[0]);
                     }
-                    foreach (var door in GameObject.FindObjectsOfType<Door>())
+                    if (option_values["doorsanity"] == 1)
                     {
-                        if (!door_list.Contains(door))
+                        foreach (var door in GameObject.FindObjectsOfType<Door>())
                         {
-                            if (door.GetType().Name == "StandardDoor")
-                            {
-                                Logger.LogMessage(GetDoorObjectName(door));
-                                door_list.Add(door);
-                            }
-                            else if (door.GetType().Name == "SwingDoor")
-                            {
-                                Logger.LogMessage(GetSwingDoorObjectName(door));
-                                door_list.Add(door);
-                            }
-                        }
-                        if (!door.locked)
-                        {
-                            if (door.GetType().Name == "StandardDoor")
-                            {
-                                if (door.transform.parent.parent.parent.name != "Room13_Office")
-                                {
-                                    if (!doors_obtained.Contains(GetDoorObjectName(door)))
-                                    {
-                                        if (!myLockedDoors.ContainsKey(GetDoorObjectName(door)))
-                                        {
-                                            door.Lock(true);
-                                            myLockedDoors.Add(GetDoorObjectName(door), door);
-                                        }
-                                    }
-                                }
-                            }
-                            else if (door.GetType().Name == "SwingDoor")
-                            {
-                                if (!doors_obtained.Contains(GetSwingDoorObjectName(door)))
-                                {
-                                    if (!myLockedDoors.ContainsKey(GetSwingDoorObjectName(door)))
-                                    {
-                                        door.Lock(true);
-                                        myLockedDoors.Add(GetSwingDoorObjectName(door), door);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (myLockedDoors.ContainsValue(door))
+                            if (!door_list.Contains(door))
                             {
                                 if (door.GetType().Name == "StandardDoor")
                                 {
-                                    if (doors_obtained.Contains(GetDoorObjectName(door)))
+                                    // Logger.LogMessage(GetDoorObjectName(door));
+                                    door_list.Add(door);
+                                }
+                                else if (door.GetType().Name == "SwingDoor")
+                                {
+                                    // Logger.LogMessage(GetSwingDoorObjectName(door));
+                                    door_list.Add(door);
+                                }
+                            }
+                            if (!door.locked)
+                            {
+                                if (door.GetType().Name == "StandardDoor")
+                                {
+                                    if (door.transform.parent.parent.parent.name != "Room13_Office")
                                     {
-                                        door.Unlock();
-                                        door.Shut();
-                                        myLockedDoors.Remove(GetDoorObjectName(door));
+                                        if (!doors_obtained.Contains(GetDoorObjectName(door)))
+                                        {
+                                            if (!myLockedDoors.ContainsKey(GetDoorObjectName(door)))
+                                            {
+                                                door.Lock(true);
+                                                myLockedDoors.Add(GetDoorObjectName(door), door);
+                                            }
+                                        }
                                     }
                                 }
                                 else if (door.GetType().Name == "SwingDoor")
                                 {
-                                    if (doors_obtained.Contains(GetSwingDoorObjectName(door)))
+                                    if (!doors_obtained.Contains(GetSwingDoorObjectName(door)))
                                     {
-                                        door.Unlock();
-                                        myLockedDoors.Remove(GetSwingDoorObjectName(door));
+                                        if (!myLockedDoors.ContainsKey(GetSwingDoorObjectName(door)))
+                                        {
+                                            door.Lock(true);
+                                            myLockedDoors.Add(GetSwingDoorObjectName(door), door);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (myLockedDoors.ContainsValue(door))
+                                {
+                                    if (door.GetType().Name == "StandardDoor")
+                                    {
+                                        if (doors_obtained.Contains(GetDoorObjectName(door)))
+                                        {
+                                            door.Unlock();
+                                            door.Shut();
+                                            myLockedDoors.Remove(GetDoorObjectName(door));
+                                        }
+                                    }
+                                    else if (door.GetType().Name == "SwingDoor")
+                                    {
+                                        if (doors_obtained.Contains(GetSwingDoorObjectName(door)))
+                                        {
+                                            door.Unlock();
+                                            myLockedDoors.Remove(GetSwingDoorObjectName(door));
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (MyPatches.lockedStandard == null)
-                    {
-                        foreach (var mat in Resources.FindObjectsOfTypeAll<Material>())
+                        foreach (Elevator elevator in environment_controller.elevators)
                         {
-                            if (mat.name == "DoorTexture_Closed")
+
+                            // Logger.LogMessage(elevator.name + " " + MyPatches.GetDoorObjectName(elevator.Door));
+                            if (elevator.Door.open && classic_game_manager.spoopMode)
                             {
-                                MyPatches.lockedStandard = mat;
-                                break;
+                                if (!myLockedExits.ContainsKey(elevator.name))
+                                {
+                                    if (!doors_obtained.Contains(MyPatches.GetDoorObjectName(elevator.Door)))
+                                    {
+                                        elevator.Door.Shut();
+                                        elevator.ColliderGroup.Enable(false);
+                                        elevator.Close();
+                                        myLockedExits.Add(elevator.name, elevator);
+                                    }
+                                }
                             }
-                        }
-                    }
-                    foreach (Elevator elevator in environment_controller.elevators)
-                    {
-                        if (!doors_obtained.Contains(GetDoorObjectName(elevator.Door)))
-                        {
-                            elevator.Door.Shut();
-                            elevator.ColliderGroup.Enable(false);
-                            elevator.Close();
+                            else if (!elevator.Door.open && classic_game_manager.FoundNotebooks >= classic_game_manager.NotebookTotal && classic_game_manager.doorsUnlocked)
+                            {
+                                if (myLockedExits.ContainsKey(elevator.name))
+                                {
+                                    if (doors_obtained.Contains(MyPatches.GetDoorObjectName(elevator.Door)))
+                                    {
+                                        elevator.ColliderGroup.Enable(true);
+                                        elevator.Open();
+                                        myLockedExits.Remove(elevator.name);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
             else if (GameObject.FindObjectOfType<ClassicGameManager>() == null)
             {
+                is_deathlinked = false;
                 item_list = new Dictionary<Items, ItemObject>();
                 items_queue = new List<Items>(items_obtained);
                 door_list = new List<Door>();
@@ -585,6 +661,35 @@ namespace BaldiAP
         
             harmony.Patch(AccessTools.Method(typeof(ITM_Acceptable), nameof(ITM_Acceptable.Use)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(ITM_Acceptor_Use_Patch))));
         
+            harmony.Patch(AccessTools.Method(typeof(CoreGameManager), nameof(CoreGameManager.EndGame)), prefix: new HarmonyMethod(AccessTools.Method(typeof(MyPatches), nameof(Death_Patch))));
+        
+        }
+
+        public static void Death_Patch(CoreGameManager __instance, Transform player, Baldi baldi, bool fieldTrip)
+        {
+            if (Plugin.option_values["death_link"] == 1)
+            {
+                if (!Plugin.is_deathlinked)
+                {
+                    if (!baldi.transform.name.Contains("NULL"))
+                    {
+                        var string_list = new List<string>();
+                        string_list.Add(Plugin.ap_slot + " died to a wooden ruler.");
+                        string_list.Add(Plugin.ap_slot + " failed a teacher.");
+                        string_list.Add(Plugin.ap_slot + " wasn't good at math.");
+                        Plugin.deathLinkService.SendDeathLink(new DeathLink(Plugin.ap_slot, string_list[UnityEngine.Random.Range(1, string_list.Count) - 1]));
+                    }
+                    else
+                    {
+                        var string_list = new List<string>();
+                        string_list.Add(Plugin.ap_slot + " should not have done that.");
+                        string_list.Add(Plugin.ap_slot + " did not heed their advice.");
+                        string_list.Add(Plugin.ap_slot + " didn't destroy the game.");
+                        string_list.Add(Plugin.ap_slot + " dug too deep.");
+                        Plugin.deathLinkService.SendDeathLink(new DeathLink(Plugin.ap_slot, string_list[UnityEngine.Random.Range(1, string_list.Count) - 1]));
+                    }
+                }
+            }
         }
 
         public static void StandardDoor_InsertItem_Patch(StandardDoor __instance, PlayerManager player, EnvironmentController ec)
@@ -602,6 +707,14 @@ namespace BaldiAP
                     if (itemAcceptor != null && Traverse.Create(__instance).Field("item").GetValue<Items>() == Items.DetentionKey && itemAcceptor.ItemFits(Traverse.Create(__instance).Field("item").GetValue<Items>()))
                     {
                         Plugin.ap_session.Locations.CompleteLocationChecksAsync(72);
+                    }
+                    else if (itemAcceptor != null && Traverse.Create(__instance).Field("item").GetValue<Items>() == Items.Quarter && itemAcceptor.ItemFits(Traverse.Create(__instance).Field("item").GetValue<Items>()))
+                    {
+                        Plugin.ap_session.Locations.CompleteLocationChecksAsync(80);
+                    }
+                    else if (itemAcceptor != null && Traverse.Create(__instance).Field("item").GetValue<Items>() == Items.DoorLock && itemAcceptor.ItemFits(Traverse.Create(__instance).Field("item").GetValue<Items>()))
+                    {
+                        Plugin.ap_session.Locations.CompleteLocationChecksAsync(76);
                     }
                 }
             }
@@ -729,7 +842,7 @@ namespace BaldiAP
                 }
                 else if (MyPatches.GetDoorObjectName(__instance) == "245, 0, 65")
                 {
-                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(71);
+                    Plugin.ap_session.Locations.CompleteLocationChecksAsync(83);
                 }
                 else if (MyPatches.GetDoorObjectName(__instance) == "75, 0, 195")
                 {
@@ -788,19 +901,20 @@ namespace BaldiAP
 
         public static void BaseManager_ElevatorClosed_Patch(BaseGameManager __instance, Elevator elevator)
         {
-            if (MyPatches.GetDoorObjectName(elevator.Door) == "55, 0, 225")
+            Plugin.Logger.LogMessage(elevator.name + " "+ MyPatches.GetDoorObjectName(elevator.Door));
+            if (MyPatches.GetDoorObjectName(elevator.Door) == "45, 0, 225")
             {
                 Plugin.ap_session.Locations.CompleteLocationChecksAsync(55);
             }
-            else if (MyPatches.GetDoorObjectName(elevator.Door) == "135, 0, 375")
+            else if (MyPatches.GetDoorObjectName(elevator.Door) == "135, 0, 385")
             {
                 Plugin.ap_session.Locations.CompleteLocationChecksAsync(56);
             }
-            else if (MyPatches.GetDoorObjectName(elevator.Door) == "295, 0, 215")
+            else if (MyPatches.GetDoorObjectName(elevator.Door) == "305, 0, 215")
             {
                 Plugin.ap_session.Locations.CompleteLocationChecksAsync(54);
             }
-            else if (MyPatches.GetDoorObjectName(elevator.Door) == "175, 0, 25")
+            else if (MyPatches.GetDoorObjectName(elevator.Door) == "175, 0, 15")
             {
                 Plugin.ap_session.Locations.CompleteLocationChecksAsync(57);
             }
@@ -828,15 +942,16 @@ namespace BaldiAP
 
         public static void ClassicWin_MyPatch(ClassicGameManager __instance)
         {
-            if (__instance.secretAvailable && (long)Plugin.ap_session.DataStorage.GetSlotData(slot: Plugin.ap_session.Players.ActivePlayer.Slot)["required_route"] == 1)
+            Plugin.ap_session.Locations.CompleteLocationChecksAsync(54, 55, 56, 57);
+            if (__instance.secretAvailable && Plugin.option_values["required_route"] == 1)
             {
                 Plugin.ap_session.SetGoalAchieved();
             }
-            else if (!__instance.secretAvailable && (long)Plugin.ap_session.DataStorage.GetSlotData(slot: Plugin.ap_session.Players.ActivePlayer.Slot)["required_route"] == 0)
+            else if (!__instance.secretAvailable && Plugin.option_values["required_route"] == 0)
             {
                 Plugin.ap_session.SetGoalAchieved();
             }
-            else if ((long)Plugin.ap_session.DataStorage.GetSlotData(slot: Plugin.ap_session.Players.ActivePlayer.Slot)["required_route"] == 2)
+            else if (Plugin.option_values["required_route"] == 2)
             {
                 Plugin.ap_session.SetGoalAchieved();
             }
