@@ -412,6 +412,17 @@ namespace BaldiAP
                     var player_itm_manager = Singleton<CoreGameManager>.Instance.GetPlayer(0).itm;
                     var classic_game_manager = GameObject.FindObjectOfType<ClassicGameManager>();
                     var environment_controller = GameObject.FindObjectOfType<EnvironmentController>();
+                    if (is_deathlinked)
+                    {
+                        if (environment_controller.GetBaldi() != null)
+                        {
+                            var baldman = environment_controller.GetBaldi();
+                            baldman.PlayerInSight(Singleton<CoreGameManager>.Instance.GetPlayer(0));
+                            baldman.baseSpeed = 500;
+                            baldman.GetAngry(0f);
+                            baldman.ManualSlap();
+                        }
+                    }
                     if (item_list.Count <= 6)
                     {
                         var to_test_list = Resources.FindObjectsOfTypeAll<ItemObject>();
