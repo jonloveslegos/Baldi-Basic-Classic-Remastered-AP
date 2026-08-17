@@ -66,4 +66,10 @@ item_table = {
 
     "Number Balloons": 48,
     "Number Balloon Receptacle": 49,
+
+    "Classic Style Notebook": 50,
+    "Party Style Notebook": 51,
+    "Demo Style Notebook": 52,
+
+    "Random Event (Trap)": 53,
 }

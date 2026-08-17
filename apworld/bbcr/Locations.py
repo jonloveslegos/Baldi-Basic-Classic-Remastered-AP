@@ -111,27 +111,62 @@ location_table = {
     "Passed Through Yellow Swinging Door - North-East Halls": 82,
     "Passed Through Supply Closet Door": 83,
 
+    "Party Mode - Cafe Present #1": 84,
+    "Party Mode - Cafe Present #2": 85,
+
+    "Party Mode - South School Faculty Present": 86,
+
+    "Party Mode - Center School Faculty Present": 87,
+
+    "Party Mode - West School Faculty Present #1": 88,
+    "Party Mode - West School Faculty Present #2": 89,
+
+    "Party Mode - Notebook 3 Room Present #1": 90,
+    "Party Mode - Notebook 3 Room Present #2": 91,
+    "Party Mode - Notebook 4 Room Present": 92,
+    "Party Mode - Notebook 5 Room Present #1": 93,
+    "Party Mode - Notebook 5 Room Present #2": 94,
+    "Party Mode - Notebook 6 Room Present": 95,
+    "Party Mode - Notebook 7 Room Present": 96,
+
+    "Party Mode - Supply Closet Present": 97,
+
+    "Party Mode - Baldi's Present Reward": 98,
+
+    "Party Mode - East School Faculty Present": 99,
+
+    "Party Mode - Halls Fun Item Machine": 100,
+    "Party Mode - Cafe Fun Item Machine": 101,
+    "Party Mode - School Faculty Fun Item Machine": 102,
+
+    "Party Mode - Cafe School Faculty Present #1": 103,
+    "Party Mode - Cafe School Faculty Present #2": 104,
 
 
+    "Demo Mode - Baldi's Quarter Reward": 105,
+
+    "Demo Mode - Item Pickup #1 (East School Faculty Room)": 106,
+    "Demo Mode - Item Pickup #2 (East School Faculty Room)": 107,
+    "Demo Mode - Item Pickup #1 (Center School Faculty Room)": 108,
+    "Demo Mode - Item Pickup #2 (Center School Faculty Room)": 109,
+    "Demo Mode - Item Pickup (South School Faculty Room)": 110,
+    "Demo Mode - Zesty Bar Machine (School Faculty Room)": 111,
+    "Demo Mode - Item Pickup #1 (Cafe School Faculty Room)": 112,
+    "Demo Mode - Item Pickup #2 (Cafe School Faculty Room)": 113,
 
 
+    "Demo Mode - BSODA Machine (Halls)": 114,
+    "Demo Mode - Quarter Pickup (Halls)": 115,
 
+    "Demo Mode - Item Pickup (Notebook 3 Room)": 116,
+    "Demo Mode - Item Pickup (Notebook 4 Room)": 117,
+    "Demo Mode - Item Pickup (Notebook 5 Room)": 118,
+    "Demo Mode - Item Pickup #1 (Notebook 7 Room)": 119,
+    "Demo Mode - Item Pickup #2 (Notebook 7 Room)": 120,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    "Demo Mode - Item Pickup #1 (Cafeteria)": 121,
+    "Demo Mode - Item Pickup #2 (Cafeteria)": 122,
+    "Demo Mode - BSODA Machine (Cafeteria)": 123,
 
 
 

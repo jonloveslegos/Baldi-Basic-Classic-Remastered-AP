@@ -22,6 +22,12 @@ def create_regions(world):
     locstart_names = []
     if world.options.required_route != 1:
         locstart_names.append("Classic Mode - Baldi's Quarter Reward")
+    if world.options.party:
+        if world.options.required_route != 1:
+            locstart_names.append("Party Mode - Baldi's Present Reward")
+    if world.options.demo:
+        if world.options.required_route != 1:
+            locstart_names.append("Demo Mode - Baldi's Quarter Reward")
     if world.options.item_usage == 1:
         locstart_names.append("Used Zesty Bar")
         locstart_names.append("Used BSODA")
@@ -34,6 +40,11 @@ def create_regions(world):
 
     reghalls = Region("Halls", player, multiworld, "Halls")
     lochalls_names = ["Classic Mode - BSODA Machine (Halls)", "Classic Mode - Quarter Pickup (Halls)"]
+    if world.options.party:
+        lochalls_names.append("Party Mode - Halls Fun Item Machine")
+    if world.options.demo:
+        lochalls_names.append("Demo Mode - BSODA Machine (Halls)")
+        lochalls_names.append("Demo Mode - Quarter Pickup (Halls)")
     if world.options.item_usage == 1:
         lochalls_names.append("Used Scissors")
         lochalls_names.append("Escaped Detention With Keys")
@@ -56,26 +67,47 @@ def create_regions(world):
 
     regnote3 = Region("Notebook 3 Room", player, multiworld, "Notebook 3 Room")
     locnote3_names = ["Notebook 3", "Classic Mode - Scissors Pickup (Notebook 3 Room)"]
+    if world.options.party:
+        locnote3_names.append("Party Mode - Notebook 3 Room Present #1")
+        locnote3_names.append("Party Mode - Notebook 3 Room Present #2")
+    if world.options.demo:
+        locnote3_names.append("Demo Mode - Item Pickup (Notebook 3 Room)")
     regnote3.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote3) for loc_name in locnote3_names]
     multiworld.regions.append(regnote3)
 
     regnote4 = Region("Notebook 4 Room", player, multiworld, "Notebook 4 Room")
     locnote4_names = ["Notebook 4", "Classic Mode - Scissors Pickup (Notebook 4 Room)"]
+    if world.options.party:
+        locnote4_names.append("Party Mode - Notebook 4 Room Present")
+    if world.options.demo:
+        locnote4_names.append("Demo Mode - Item Pickup (Notebook 4 Room)")
     regnote4.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote4) for loc_name in locnote4_names]
     multiworld.regions.append(regnote4)
 
     regnote5 = Region("Notebook 5 Room", player, multiworld, "Notebook 5 Room")
     locnote5_names = ["Notebook 5", "Classic Mode - Big 'Ol Boots Pickup (Notebook 5 Room)"]
+    if world.options.party:
+        locnote5_names.append("Party Mode - Notebook 5 Room Present #1")
+        locnote5_names.append("Party Mode - Notebook 5 Room Present #2")
+    if world.options.demo:
+        locnote5_names.append("Demo Mode - Item Pickup (Notebook 5 Room)")
     regnote5.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote5) for loc_name in locnote5_names]
     multiworld.regions.append(regnote5)
 
     regnote6 = Region("Notebook 6 Room", player, multiworld, "Notebook 6 Room")
     locnote6_names = ["Notebook 6"]
+    if world.options.party:
+        locnote6_names.append("Party Mode - Notebook 6 Room Present")
     regnote6.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote6) for loc_name in locnote6_names]
     multiworld.regions.append(regnote6)
 
     regnote7 = Region("Notebook 7 Room", player, multiworld, "Notebook 7 Room")
     locnote7_names = ["Notebook 7", "Classic Mode - Scissors Pickup (Notebook 7 Room)"]
+    if world.options.party:
+        locnote7_names.append("Party Mode - Notebook 7 Room Present")
+    if world.options.demo:
+        locnote7_names.append("Demo Mode - Item Pickup #1 (Notebook 7 Room)")
+        locnote7_names.append("Demo Mode - Item Pickup #2 (Notebook 7 Room)")
     regnote7.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote7) for loc_name in locnote7_names]
     multiworld.regions.append(regnote7)
 
@@ -85,38 +117,73 @@ def create_regions(world):
     #regions for the school faculty rooms
     regfac1 = Region("Faculty Room 1 (Near South Exit)", player, multiworld, "Faculty Room 1 (Near South Exit)")
     locfac1_names = ["Classic Mode - Zesty Bar Pickup (School Faculty Room)"]
+    if world.options.party:
+        locfac1_names.append("Party Mode - South School Faculty Present")
+    if world.options.demo:
+        locfac1_names.append("Demo Mode - Item Pickup (South School Faculty Room)")
     regfac1.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regfac1) for loc_name in locfac1_names]
     multiworld.regions.append(regfac1)
 
     regfac2 = Region("Faculty Room 2 (Near Middle Of School)", player, multiworld, "Faculty Room 2 (Near Middle Of School)")
     locfac2_names = ["Classic Mode - Baldi's Least Favorite Tape Pickup (School Faculty Room)"]
+    if world.options.party:
+        locfac2_names.append("Party Mode - Center School Faculty Present")
+    if world.options.demo:
+        locfac2_names.append("Demo Mode - Item Pickup #1 (Center School Faculty Room)")
+        locfac2_names.append("Demo Mode - Item Pickup #2 (Center School Faculty Room)")
     regfac2.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regfac2) for loc_name in locfac2_names]
     multiworld.regions.append(regfac2)
 
     regfac3 = Region("Faculty Room 3 (Near East Exit)", player, multiworld, "Faculty Room 3 (Near East Exit)")
     locfac3_names = ["Classic Mode - Swinging Door Lock Pickup (School Faculty Room)"]
+    if world.options.party:
+        locfac3_names.append("Party Mode - East School Faculty Present")
+    if world.options.demo:
+        locfac3_names.append("Demo Mode - Item Pickup #1 (East School Faculty Room)")
+        locfac3_names.append("Demo Mode - Item Pickup #2 (East School Faculty Room)")
     regfac3.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regfac3) for loc_name in locfac3_names]
     multiworld.regions.append(regfac3)
 
     regfac4 = Region("Faculty Room 4 (Near Cafe)", player, multiworld, "Faculty Room 4 (Near Cafe)")
     locfac4_names = ["Classic Mode - Principal's Keys Pickup (School Faculty Room)", "Classic Mode - WD-NoSquee Pickup (School Faculty Room)", "Classic Mode - Zesty Bar Machine (School Faculty Room)"]
+    if world.options.party:
+        locfac4_names.append("Party Mode - Cafe School Faculty Present #1")
+        locfac4_names.append("Party Mode - Cafe School Faculty Present #2")
+        locfac4_names.append("Party Mode - School Faculty Fun Item Machine")
+    if world.options.demo:
+        locfac4_names.append("Demo Mode - Item Pickup #1 (Cafe School Faculty Room)")
+        locfac4_names.append("Demo Mode - Item Pickup #2 (Cafe School Faculty Room)")
+        locfac4_names.append("Demo Mode - Zesty Bar Machine (School Faculty Room)")
     regfac4.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regfac4) for loc_name in locfac4_names]
     multiworld.regions.append(regfac4)
 
     regfac5 = Region("Faculty Room 5 (Near West Exit)", player, multiworld, "Faculty Room 5 (Near West Exit)")
     locfac5_names = ["Classic Mode - Alarm Clock (School Faculty Room)", "Classic Mode - Quarter Pickup (School Faculty Room)"]
+    if world.options.party:
+        locfac5_names.append("Party Mode - West School Faculty Present #1")
+        locfac5_names.append("Party Mode - West School Faculty Present #2")
     regfac5.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regfac5) for loc_name in locfac5_names]
     multiworld.regions.append(regfac5)
 
     # supply closet
     regsup = Region("Supply Closet", player, multiworld, "Supply Closet")
     locsup_names = ["Classic Mode - WD-NoSquee Pickup (Supply Closet)"]
+    if world.options.party:
+        locsup_names.append("Party Mode - Supply Closet Present")
     regsup.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regsup) for loc_name in locsup_names]
     multiworld.regions.append(regsup)
 
     # cafe thing
     regcafe = Region("Cafeteria", player, multiworld, "Cafeteria")
     loccafe_names = ["Classic Mode - Zesty Bar Pickup (Cafeteria)", "Classic Mode - BSODA Machine (Cafeteria)", "Classic Mode - BSODA Pickup (Cafeteria)"]
+    if world.options.party:
+        loccafe_names.append("Party Mode - Cafe Fun Item Machine")
+        loccafe_names.append("Party Mode - Cafe Present #1")
+        loccafe_names.append("Party Mode - Cafe Present #2")
+    if world.options.demo:
+        loccafe_names.append("Demo Mode - BSODA Machine (Cafeteria)")
+        loccafe_names.append("Demo Mode - Item Pickup #1 (Cafeteria)")
+        loccafe_names.append("Demo Mode - Item Pickup #2 (Cafeteria)")
     regcafe.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regcafe) for loc_name in loccafe_names]
     multiworld.regions.append(regcafe)
 
@@ -358,8 +425,7 @@ def connect(world, name: str, source: str, target: str, rule=None, reach: Option
     source_region.exits.append(connection)
     connection.connect(target_region)
 
-
-    print(f"\nConnecting Region {source} to Region {target} with rule: {rule_to_str}\n")
+    # print(f"\nConnecting Region {source} to Region {target} with rule: {rule_to_str}\n")
 
     return connection if reach else None
 
@@ -369,7 +435,7 @@ def connect_entrances(world) -> None:
     connect(world, "Menu UI", "Menu", "UI")
 
     #classic mode entrance
-    connect(world, "Game Start", "UI", "Starting Halls")
+    connect(world, "Game Start", "UI", "Starting Halls", lambda state: state.has("Classic Style", world.player) or state.has("Party Style", world.player) or state.has("Demo Style", world.player))
 
     connect(world, "North Exit", "North Exit", "Exit", lambda state: state.has("Notebook", world.player, 7))
     connect(world, "West Exit", "West Exit", "Exit", lambda state: state.has("Notebook", world.player, 7))

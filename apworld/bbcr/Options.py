@@ -29,6 +29,14 @@ class WhichStyle(Choice):
     option_demo = 2
     default = 0
 
+class ReqGoal(Choice):
+    """Which style do you want to beat to win?"""
+    display_name = "Goal Style"
+    option_classic = 0
+    option_party = 1
+    option_demo = 2
+    default = 0
+
 class Traps(Toggle):
     """These traps take the place of a few filler Quarters. Includes getting hit with Arts and Crafters, having to jump rope from Playtime, and a random teleport to Detention."""
     display_name = "Traps"
@@ -68,6 +76,7 @@ class BBCROptions(PerGameCommonOptions):
     party: RandomParty
     demo: RandomDemo
     which_style: WhichStyle
+    req_style: ReqGoal
     notechecks: ExtraNotebookChecks
     doorsanity: Doorsanity
     item_usage: ItemUsage

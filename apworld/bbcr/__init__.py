@@ -64,12 +64,30 @@ class BBCRWorld(World):
 
     def create_regions(self):
         create_regions(self)
-        if not self.options.doorsanity:
-            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7)
-        elif self.options.doorsanity:
-            self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook",
-                        self.player, 7) and state.has("East Exit", self.player) and state.has("West Exit", self.player) and state.has("South Exit", self.player) and state.has("North Exit",
-                        self.player) and state.can_reach("Cafeteria", "Region", self.player)
+        if self.options.req_style == 0:
+            if not self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7) and state.has("Classic Style", self.player)
+            elif self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook",
+                            self.player, 7) and state.has("East Exit", self.player) and state.has("West Exit", self.player) and state.has("South Exit", self.player) and state.has("North Exit",
+                            self.player) and state.has("Classic Style", self.player) and state.can_reach("Cafeteria", "Region", self.player)
+        elif self.options.req_style == 1:
+            if not self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7) and state.has("Party Style", self.player) and state.has("Purple Baldi (Party Style)", self.player) and state.has("Blue Baldi (Party Style)",
+                            self.player) and state.has("Orange Baldi (Party Style)", self.player) and state.has("Green Baldi (Party Style)", self.player)
+            elif self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook",
+                            self.player, 7) and state.has("East Exit", self.player) and state.has("West Exit", self.player) and state.has("South Exit", self.player) and state.has("North Exit",
+                            self.player) and state.has("Party Style", self.player) and state.can_reach("Cafeteria", "Region", self.player) and state.has("Purple Baldi (Party Style)", self.player) and state.has("Blue Baldi (Party Style)",
+                            self.player) and state.has("Orange Baldi (Party Style)", self.player) and state.has("Green Baldi (Party Style)", self.player)
+        elif self.options.req_style == 2:
+            if not self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7) and state.has("Demo Style", self.player)
+            elif self.options.doorsanity:
+                self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook",
+                            self.player, 7) and state.has("East Exit", self.player) and state.has("West Exit", self.player) and state.has("South Exit", self.player) and state.has("North Exit",
+                            self.player) and state.has("Demo Style", self.player) and state.can_reach("Cafeteria", "Region", self.player) and state.has("Number Balloons", self.player) and state.has("Number Balloon Receptacle", self.player)
+
 
 
     def create_item(self, name: str) -> "Item":
@@ -350,39 +368,47 @@ class BBCRWorld(World):
             totalItems -= 4
             print("Exit" + str(totalItems))
 
-            if self.options.party:
-                self.multiworld.itempool.append(Item("Purple Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Purple Baldi (Party Style)"], self.player))
-                self.multiworld.itempool.append(Item("Orange Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Orange Baldi (Party Style)"], self.player))
-                self.multiworld.itempool.append(Item("Green Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Green Baldi (Party Style)"], self.player))
-                self.multiworld.itempool.append(Item("Blue Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Blue Baldi (Party Style)"], self.player))
-                if self.options.which_style != 1:
-                    self.multiworld.itempool.append(Item("Party Style", ItemClassification.progression, self.item_name_to_id["Party Style"], self.player))
-                else:
-                    self.multiworld.push_precollected(self.create_item("Party Style"))
+        if self.options.party:
+            self.multiworld.itempool.append(Item("Purple Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Purple Baldi (Party Style)"], self.player))
+            self.multiworld.itempool.append(Item("Orange Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Orange Baldi (Party Style)"], self.player))
+            self.multiworld.itempool.append(Item("Green Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Green Baldi (Party Style)"], self.player))
+            self.multiworld.itempool.append(Item("Blue Baldi (Party Style)", ItemClassification.progression, self.item_name_to_id["Blue Baldi (Party Style)"], self.player))
+            totalItems -= 4
+            if self.options.which_style != 1:
+                self.multiworld.itempool.append(Item("Party Style", ItemClassification.progression, self.item_name_to_id["Party Style"], self.player))
+                print("Party Style to multi")
+                totalItems -= 1
             else:
-                if self.options.which_style == 1:
-                    print("Party Style isn't randomized. Giving " + str(self.player) + " Classic Style Instead.")
-                    self.multiworld.push_precollected(self.create_item("Classic Style"))
-
-            if self.options.demo:
-                self.multiworld.itempool.append(Item("Number Balloons", ItemClassification.progression,
-                                                     self.item_name_to_id["Number Balloons"], self.player))
-                self.multiworld.itempool.append(Item("Number Balloon Receptacle", ItemClassification.progression,
-                                                     self.item_name_to_id["Number Balloon Receptacle"], self.player))
-                if self.options.which_style != 2:
-                    self.multiworld.itempool.append(Item("Demo Style", ItemClassification.progression, self.item_name_to_id["Demo Style"], self.player))
-                else:
-                    self.multiworld.push_precollected(self.create_item("Demo Style"))
-            else:
-                if self.options.which_style == 1:
-                    print("Demo Style isn't randomized. Giving " + str(self.player) + " Classic Style Instead.")
-                    self.multiworld.push_precollected(self.create_item("Classic Style"))
-
-            if self.options.which_style == 0:
+                self.multiworld.push_precollected(self.create_item("Party Style"))
+                print("party style to precollected")
+        else:
+            if self.options.which_style == 1:
+                print("Party Style isn't randomized. Giving " + str(self.player_name) + " Classic Style Instead.")
                 self.multiworld.push_precollected(self.create_item("Classic Style"))
+
+        if self.options.demo:
+            self.multiworld.itempool.append(Item("Number Balloons", ItemClassification.progression,
+                                                 self.item_name_to_id["Number Balloons"], self.player))
+            self.multiworld.itempool.append(Item("Number Balloon Receptacle", ItemClassification.progression,
+                                                 self.item_name_to_id["Number Balloon Receptacle"], self.player))
+            totalItems -= 2
+            if self.options.which_style != 2:
+                self.multiworld.itempool.append(Item("Demo Style", ItemClassification.progression, self.item_name_to_id["Demo Style"], self.player))
+                print("Demo Style to multi")
+                totalItems -= 1
             else:
-                self.multiworld.itempool.append(
-                    Item("Classic Style", ItemClassification.progression, self.item_name_to_id["Classic Style"], self.player))
+                self.multiworld.push_precollected(self.create_item("Demo Style"))
+                print("demo style to precollected")
+        else:
+            if self.options.which_style == 1:
+                print("Demo Style isn't randomized. Giving " + str(self.player_name) + " Classic Style Instead.")
+                self.multiworld.push_precollected(self.create_item("Classic Style"))
+
+        if self.options.which_style == 0:
+            self.multiworld.push_precollected(self.create_item("Classic Style"))
+        else:
+            self.multiworld.itempool.append(
+                Item("Classic Style", ItemClassification.progression, self.item_name_to_id["Classic Style"], self.player))
 
 
         if totalItems >= 1:
@@ -393,55 +419,96 @@ class BBCRWorld(World):
             print(totalItems)
             print(totalItems * (trap_amount / 100))
             trap_amount = round(totalItems * (trap_amount / 100))
+            trap_amount -= 2
+            print(trap_amount)
+
             if totalItems >= 1:
                 if self.options.funny_traps:
                     for _ in range(trap_amount):
-                        trap_choose = self.random.randint(1, 3)
-                        if trap_choose == 1:
-                            self.multiworld.itempool.append(Item("Jump Rope Time (Trap)", ItemClassification.trap, self.item_name_to_id["Jump Rope Time (Trap)"], self.player))
-                        elif trap_choose == 2:
-                            self.multiworld.itempool.append(Item("The Arts and Crafters Effect (Trap)", ItemClassification.trap, self.item_name_to_id["The Arts and Crafters Effect (Trap)"], self.player))
-                        elif trap_choose == 3:
-                            self.multiworld.itempool.append(Item("Detention For You. (When Will You Learn?) (Trap)", ItemClassification.trap, self.item_name_to_id["Detention For You. (When Will You Learn?) (Trap)"], self.player))
-                        totalItems -= 1
-                        print("Trap")
-                        print(totalItems)
+                        if totalItems >= 1:
+                            trap_choose = self.random.randint(1, 3)
+                            if trap_choose == 1:
+                                self.multiworld.itempool.append(Item("Jump Rope Time (Trap)", ItemClassification.trap, self.item_name_to_id["Jump Rope Time (Trap)"], self.player))
+                            elif trap_choose == 2:
+                                self.multiworld.itempool.append(Item("The Arts and Crafters Effect (Trap)", ItemClassification.trap, self.item_name_to_id["The Arts and Crafters Effect (Trap)"], self.player))
+                            elif trap_choose == 3:
+                                self.multiworld.itempool.append(Item("Detention For You. (When Will You Learn?) (Trap)", ItemClassification.trap, self.item_name_to_id["Detention For You. (When Will You Learn?) (Trap)"], self.player))
+                            totalItems -= 1
+                            print("Trap")
+                            print(totalItems)
         if totalItems >= 1:
             for _ in range(totalItems):
                 item_to_gen = self.random.randint(1, 12)
                 print("item number" + str(item_to_gen))
                 if item_to_gen == 1 or item_to_gen >= 10:
-                    self.multiworld.itempool.append(
-                        Item("BSODA", ItemClassification.useful, self.item_name_to_id["BSODA"], self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(
+                            Item("BSODA", ItemClassification.progression, self.item_name_to_id["BSODA"], self.player))
+                    else:
+                        self.multiworld.itempool.append(
+                            Item("BSODA", ItemClassification.useful, self.item_name_to_id["BSODA"], self.player))
                 elif item_to_gen == 2:
-                    self.multiworld.itempool.append(Item("Baldi's Least Favorite Tape", ItemClassification.useful, self.item_name_to_id["Baldi's Least Favorite Tape"], self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(Item("Baldi's Least Favorite Tape", ItemClassification.progression, self.item_name_to_id["Baldi's Least Favorite Tape"], self.player))
+                    else:
+                        self.multiworld.itempool.append(Item("Baldi's Least Favorite Tape", ItemClassification.useful,
+                                                             self.item_name_to_id["Baldi's Least Favorite Tape"],
+                                                             self.player))
                 elif item_to_gen == 3:
                     if self.options.item_usage:
                         self.multiworld.itempool.append(Item("Safety Scissors", ItemClassification.progression, self.item_name_to_id["Safety Scissors"], self.player))
                     elif not self.options.item_usage:
                         self.multiworld.itempool.append(Item("Safety Scissors", ItemClassification.useful, self.item_name_to_id["Safety Scissors"], self.player))
                 elif item_to_gen == 4:
-                    self.multiworld.itempool.append(
-                        Item("Zesty Bar", ItemClassification.useful, self.item_name_to_id["Zesty Bar"],
-                             self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(
+                            Item("Zesty Bar", ItemClassification.progression, self.item_name_to_id["Zesty Bar"],
+                                 self.player))
+                    else:
+                        self.multiworld.itempool.append(
+                            Item("Zesty Bar", ItemClassification.useful, self.item_name_to_id["Zesty Bar"],
+                                 self.player))
                 elif item_to_gen == 5:
-                    self.multiworld.itempool.append(Item("Swinging Door Lock", ItemClassification.useful,
-                                                         self.item_name_to_id["Swinging Door Lock"], self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(Item("Swinging Door Lock", ItemClassification.progression,
+                                                             self.item_name_to_id["Swinging Door Lock"], self.player))
+                    else:
+                        self.multiworld.itempool.append(Item("Swinging Door Lock", ItemClassification.useful,
+                                                             self.item_name_to_id["Swinging Door Lock"], self.player))
                 elif item_to_gen == 6:
-                    self.multiworld.itempool.append(Item("Principal's Keys", ItemClassification.useful,
-                                                         self.item_name_to_id["Principal's Keys"], self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(Item("Principal's Keys", ItemClassification.progression,
+                                                             self.item_name_to_id["Principal's Keys"], self.player))
+                    else:
+                        self.multiworld.itempool.append(Item("Principal's Keys", ItemClassification.useful,
+                                                             self.item_name_to_id["Principal's Keys"], self.player))
                 elif item_to_gen == 7:
-                    self.multiworld.itempool.append(
-                        Item("WD-NoSquee", ItemClassification.useful, self.item_name_to_id["WD-NoSquee"],
-                             self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(
+                            Item("WD-NoSquee", ItemClassification.progression, self.item_name_to_id["WD-NoSquee"],
+                                 self.player))
+                    else:
+                        self.multiworld.itempool.append(
+                            Item("WD-NoSquee", ItemClassification.useful, self.item_name_to_id["WD-NoSquee"],
+                                 self.player))
                 elif item_to_gen == 8:
-                    self.multiworld.itempool.append(
-                        Item("Alarm Clock", ItemClassification.useful, self.item_name_to_id["Alarm Clock"],
-                             self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(
+                            Item("Alarm Clock", ItemClassification.progression, self.item_name_to_id["Alarm Clock"],
+                                 self.player))
+                    else:
+                        self.multiworld.itempool.append(
+                            Item("Alarm Clock", ItemClassification.useful, self.item_name_to_id["Alarm Clock"],
+                                 self.player))
                 elif item_to_gen == 9:
-                    self.multiworld.itempool.append(
-                        Item("Big 'Ol Boots", ItemClassification.useful, self.item_name_to_id["Big 'Ol Boots"],
-                             self.player))
+                    if self.options.item_usage:
+                        self.multiworld.itempool.append(
+                            Item("Big 'Ol Boots", ItemClassification.progression, self.item_name_to_id["Big 'Ol Boots"],
+                                 self.player))
+                    else:
+                        self.multiworld.itempool.append(
+                            Item("Big 'Ol Boots", ItemClassification.useful, self.item_name_to_id["Big 'Ol Boots"],
+                                 self.player))
                 totalItems -= 1
                 print(totalItems)
 
@@ -456,6 +523,84 @@ class BBCRWorld(World):
 
         print(len(self.multiworld.itempool))
         print(totalItems)
+
+        empty_variable = 0
+        while empty_variable != 18:
+            # print(str(self.location_id_to_name[8 + empty_variable]))
+            add_rule(self.get_location(str(self.location_id_to_name[8 + empty_variable])),
+                     lambda state: state.has("Classic Style", self.player, 1))
+            # print(str(self.location_id_to_name[8 + empty_variable]) + " is now locked behind classic")
+            empty_variable += 1
+
+        if self.options.party:
+            empty_variable = 1
+            while empty_variable != 22:
+                # print(str(self.location_id_to_name[83 + empty_variable]))
+                add_rule(self.get_location(str(self.location_id_to_name[83 + empty_variable])),
+                         lambda state: state.has("Party Style", self.player, 1))
+                # print(str(self.location_id_to_name[83 + empty_variable]) + " is now locked behind party")
+                empty_variable += 1
+
+        if self.options.demo:
+            empty_variable = 1
+            while empty_variable != 20:
+                # print(str(self.location_id_to_name[104 + empty_variable]))
+                add_rule(self.get_location(str(self.location_id_to_name[104 + empty_variable])),
+                         lambda state: state.has("Demo Style", self.player, 1))
+                # print(str(self.location_id_to_name[104 + empty_variable]) + " is now locked behind demo")
+                empty_variable += 1
+
+        empty_variable = 0
+        while empty_variable != 7:
+            add_rule(self.get_location(str(self.location_id_to_name[empty_variable + 1])),
+                     lambda state: state.has("Classic Style", self.player, 1) or state.has("Party Style", self.player, 1) or state.has("Demo Mode", self.player, 1) and state.has("Number Balloons",
+                    self.player, 1) and state.has("Number Balloon Receptacle", self.player, 1))
+            empty_variable += 1
+
+        bsoda1 = self.get_location("Classic Mode - BSODA Machine (Cafeteria)")
+        add_rule(bsoda1, lambda state: state.has("Quarter", self.player, 2))
+
+        bsoda2 = self.get_location("Classic Mode - BSODA Machine (Halls)")
+        add_rule(bsoda2, lambda state: state.has("Quarter", self.player, 2))
+
+        zesty1 = self.get_location("Classic Mode - Zesty Bar Machine (School Faculty Room)")
+        add_rule(zesty1, lambda state: state.has("Quarter", self.player, 2))
+
+        # quarter reward
+        quarter = self.get_location("Classic Mode - Baldi's Quarter Reward")
+        add_rule(quarter, lambda state: state.has("Notebook", self.player, 1))
+
+        # item usage
+        if self.options.item_usage:
+            quarter_use = self.get_location("Used a Quarter")
+            add_rule(quarter_use, lambda state: state.has("Quarter", self.player, 1))
+
+            scissor_use = self.get_location("Used Scissors")
+            add_rule(scissor_use, lambda state: state.has("Safety Scissors", self.player, 1))
+
+            keys_use = self.get_location("Escaped Detention With Keys")
+            add_rule(keys_use, lambda state: state.has("Principal's Keys", self.player, 1))
+
+            tape_use = self.get_location("Used Baldi's Least Favorite Tape")
+            add_rule(tape_use, lambda state: state.has("Baldi's Least Favorite Tape", self.player, 1))
+
+            bar_use = self.get_location("Used Zesty Bar")
+            add_rule(bar_use, lambda state: state.has("Zesty Bar", self.player, 1))
+
+            soda_use = self.get_location("Used BSODA")
+            add_rule(soda_use, lambda state: state.has("BSODA", self.player, 1))
+
+            boot_use = self.get_location("Used the Big 'Ol Boots")
+            add_rule(boot_use, lambda state: state.has("Big 'Ol Boots", self.player, 1))
+
+            wd_use = self.get_location("Used the WD-NoSquee")
+            add_rule(wd_use, lambda state: state.has("WD-NoSquee", self.player, 1))
+
+            lock_use = self.get_location("Used the Yellow Swinging Door Lock")
+            add_rule(lock_use, lambda state: state.has("Swinging Door Lock", self.player, 1))
+
+            clock_use = self.get_location("Used the Alarm Clock")
+            add_rule(clock_use, lambda state: state.has("Alarm Clock", self.player, 1))
 
 
 
@@ -486,16 +631,15 @@ class BBCRWorld(World):
         # A dictionary returned from this method gets set as the slot_data and will be sent to the client after connecting.
         # The options dataclass has a method to return a `Dict[str, Any]` of each option name provided and the relevant
         # option's value.
-        names = ["required_route", "notechecks", ]
+        names = ["required_route", "notechecks", "doorsanity", "death_link", "req_style", "party", "demo"]
         return self.options.as_dict(*names)
 
 
     def generate_output(self, output_directory: str) -> None:
         ConnectInf ="""ip=[replace these brackets with the server name, like archipelago.gg]
-    port=[port number]
-    slot=[slot name]
-    pass=[password. remove brackets if none]
-    [please move back port, slot, and pass so that they are all along side ip. I don't know how to fix it.]"""
+port=[port number]
+slot=""" + self.player_name + """
+pass=[password. remove brackets if none]"""
         print(ConnectInf)
 
         filename = f"{self.multiworld.get_out_file_name_base(self.player)}.aptxt"

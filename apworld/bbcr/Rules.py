@@ -1,10 +1,13 @@
 import typing
+from typing import TYPE_CHECKING
 
-from .__init__ import BBCRWorld
+if TYPE_CHECKING:
+    from .__init__ import BBCRWorld
 from ..generic.Rules import add_rule, set_rule
 from BaseClasses import CollectionState
 
-def set_location_rules(world: BBCRWorld) -> None:
+def set_location_rules(world: "BBCRWorld") -> None:
+
     yellow_door_west_start = world.get_location("Passed Through Yellow Swinging Door - West of Start")
     add_rule(yellow_door_west_start, lambda state: state.has("Yellow Swinging Door - West of Start", world.player, 1))
 
@@ -103,32 +106,55 @@ def set_location_rules(world: BBCRWorld) -> None:
     add_rule(quarter, lambda state: state.has("Notebook", world.player, 1))
 
     #item usage
-    quarter_use = world.get_location("Used a Quarter")
-    add_rule(quarter_use, lambda state: state.has("Quarter", world.player, 1))
+    if world.options.item_usage:
+        quarter_use = world.get_location("Used a Quarter")
+        add_rule(quarter_use, lambda state: state.has("Quarter", world.player, 1))
 
-    scissor_use = world.get_location("Used Scissors")
-    add_rule(scissor_use, lambda state: state.has("Safety Scissors", world.player, 1))
+        scissor_use = world.get_location("Used Scissors")
+        add_rule(scissor_use, lambda state: state.has("Safety Scissors", world.player, 1))
 
-    keys_use = world.get_location("Escaped Detention With Keys")
-    add_rule(keys_use, lambda state: state.has("Principal's Keys", world.player, 1))
+        keys_use = world.get_location("Escaped Detention With Keys")
+        add_rule(keys_use, lambda state: state.has("Principal's Keys", world.player, 1))
 
-    tape_use = world.get_location("Used Baldi's Least Favorite Tape")
-    add_rule(tape_use, lambda state: state.has("Baldi's Least Favorite Tape", world.player, 1))
+        tape_use = world.get_location("Used Baldi's Least Favorite Tape")
+        add_rule(tape_use, lambda state: state.has("Baldi's Least Favorite Tape", world.player, 1))
 
-    bar_use = world.get_location("Used Zesty Bar")
-    add_rule(bar_use, lambda state: state.has("Zesty Bar", world.player, 1))
+        bar_use = world.get_location("Used Zesty Bar")
+        add_rule(bar_use, lambda state: state.has("Zesty Bar", world.player, 1))
 
-    soda_use = world.get_location("Used BSODA")
-    add_rule(soda_use, lambda state: state.has("BSODA", world.player, 1))
+        soda_use = world.get_location("Used BSODA")
+        add_rule(soda_use, lambda state: state.has("BSODA", world.player, 1))
 
-    boot_use = world.get_location("Used the Big 'Ol Boots")
-    add_rule(boot_use, lambda state: state.has("Big 'Ol Boots", world.player, 1))
+        boot_use = world.get_location("Used the Big 'Ol Boots")
+        add_rule(boot_use, lambda state: state.has("Big 'Ol Boots", world.player, 1))
 
-    wd_use = world.get_location("Used the WD-NoSquee")
-    add_rule(wd_use, lambda state: state.has("WD-NoSquee", world.player, 1))
+        wd_use = world.get_location("Used the WD-NoSquee")
+        add_rule(wd_use, lambda state: state.has("WD-NoSquee", world.player, 1))
 
-    lock_use = world.get_location("Used the Yellow Swinging Door Lock")
-    add_rule(lock_use, lambda state: state.has("Swinging Door Lock", world.player, 1))
+        lock_use = world.get_location("Used the Yellow Swinging Door Lock")
+        add_rule(lock_use, lambda state: state.has("Swinging Door Lock", world.player, 1))
 
-    clock_use = world.get_location("Used the Alarm Clock")
-    add_rule(clock_use, lambda state: state.has("Alarm Clock", world.player, 1))
+        clock_use = world.get_location("Used the Alarm Clock")
+        add_rule(clock_use, lambda state: state.has("Alarm Clock", world.player, 1))
+
+    empty_variable = 0
+    while empty_variable != 18:
+        print(str(world.location_id_to_name[8 + empty_variable]))
+        add_rule(world.get_location(str(world.location_id_to_name[8 + empty_variable])), lambda state: state.has("Classic Style", world.player, 1))
+        print(str(world.location_id_to_name[8 + empty_variable]) + " is now locked behind classic")
+        empty_variable += 1
+
+    empty_variable = 1
+    while empty_variable != 17:
+        print(str(world.location_id_to_name[83 + empty_variable]))
+        add_rule(world.get_location(str(world.location_id_to_name[83 + empty_variable])), lambda state: state.has("Party Style", world.player, 1))
+        print(str(world.location_id_to_name[83 + empty_variable]) + " is now locked behind party")
+        empty_variable += 1
+
+    empty_variable = 1
+    while empty_variable != 20:
+        print(str(world.location_id_to_name[104 + empty_variable]))
+        add_rule(world.get_location(str(world.location_id_to_name[104 + empty_variable])),
+                 lambda state: state.has("Demo Style", world.player, 1))
+        print(str(world.location_id_to_name[104 + empty_variable]) + " is now locked behind demo")
+        empty_variable += 1
