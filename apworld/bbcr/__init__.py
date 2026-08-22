@@ -59,11 +59,21 @@ class BBCRWorld(World):
 
     def __init__(self, multiworld, player):
         super().__init__(multiworld, player)
+        self.unplaced_items: int = 0
 
 
 
     def create_regions(self):
         create_regions(self)
+
+        if self.options.req_style == 1:
+            if self.options.party == 0:
+                raise OptionError("I really doubt that you would want to try to beat Party Style when you don't even have it randomized.")
+
+        if self.options.req_style == 2:
+            if self.options.demo == 0:
+                raise OptionError("I really doubt that you would want to try to beat Demo Style when you don't even have it randomized.")
+
         if self.options.req_style == 0:
             if not self.options.doorsanity:
                 self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7) and state.has("Classic Style", self.player)
@@ -86,7 +96,7 @@ class BBCRWorld(World):
             elif self.options.doorsanity:
                 self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook",
                             self.player, 7) and state.has("East Exit", self.player) and state.has("West Exit", self.player) and state.has("South Exit", self.player) and state.has("North Exit",
-                            self.player) and state.has("Demo Style", self.player) and state.can_reach("Cafeteria", "Region", self.player) and state.has("Number Balloons", self.player) and state.has("Number Balloon Receptacle", self.player)
+                            self.player) and state.has("Demo Style", self.player) and state.can_reach("Cafeteria", "Region", self.player)
 
 
 
@@ -99,6 +109,7 @@ class BBCRWorld(World):
         starting_locations = len(self.multiworld.get_unfilled_locations(self.player))
 
         totalItems = len(self.multiworld.get_unfilled_locations(self.player))
+        self.unplaced_items = totalItems
         print(len(self.multiworld.get_unfilled_locations(self.player)))
         NotebookNumber = 7
         BSODANumber = 3
@@ -387,11 +398,6 @@ class BBCRWorld(World):
                 self.multiworld.push_precollected(self.create_item("Classic Style"))
 
         if self.options.demo:
-            self.multiworld.itempool.append(Item("Number Balloons", ItemClassification.progression,
-                                                 self.item_name_to_id["Number Balloons"], self.player))
-            self.multiworld.itempool.append(Item("Number Balloon Receptacle", ItemClassification.progression,
-                                                 self.item_name_to_id["Number Balloon Receptacle"], self.player))
-            totalItems -= 2
             if self.options.which_style != 2:
                 self.multiworld.itempool.append(Item("Demo Style", ItemClassification.progression, self.item_name_to_id["Demo Style"], self.player))
                 print("Demo Style to multi")
@@ -404,11 +410,19 @@ class BBCRWorld(World):
                 print("Demo Style isn't randomized. Giving " + str(self.player_name) + " Classic Style Instead.")
                 self.multiworld.push_precollected(self.create_item("Classic Style"))
 
-        if self.options.which_style == 0:
+        if self.options.demo == 1 or self.options.party == 1:
+            if self.options.party == 0 and self.options.which_style == 1:
+                print("nothing to do here")
+            elif self.options.demo == 0 and self.options.which_style == 2:
+                print("nothing to do here")
+            else:
+                if self.options.which_style == 0:
+                    self.multiworld.push_precollected(self.create_item("Classic Style"))
+                else:
+                    self.multiworld.itempool.append(Item("Classic Style", ItemClassification.progression, self.item_name_to_id["Classic Style"], self.player))
+                    totalItems -= 1
+        if self.options.demo == 0 and self.options.party == 0:
             self.multiworld.push_precollected(self.create_item("Classic Style"))
-        else:
-            self.multiworld.itempool.append(
-                Item("Classic Style", ItemClassification.progression, self.item_name_to_id["Classic Style"], self.player))
 
 
         if totalItems >= 1:
@@ -436,8 +450,11 @@ class BBCRWorld(World):
                             totalItems -= 1
                             print("Trap")
                             print(totalItems)
+
         if totalItems >= 1:
-            for _ in range(totalItems):
+            filler_num = totalItems
+            filler_num -= 0
+            for _ in range(filler_num):
                 item_to_gen = self.random.randint(1, 12)
                 print("item number" + str(item_to_gen))
                 if item_to_gen == 1 or item_to_gen >= 10:
@@ -524,7 +541,7 @@ class BBCRWorld(World):
         print(len(self.multiworld.itempool))
         print(totalItems)
 
-        empty_variable = 0
+        empty_variable = 1
         while empty_variable != 18:
             # print(str(self.location_id_to_name[8 + empty_variable]))
             add_rule(self.get_location(str(self.location_id_to_name[8 + empty_variable])),
@@ -536,26 +553,20 @@ class BBCRWorld(World):
             empty_variable = 1
             while empty_variable != 22:
                 # print(str(self.location_id_to_name[83 + empty_variable]))
-                add_rule(self.get_location(str(self.location_id_to_name[83 + empty_variable])),
-                         lambda state: state.has("Party Style", self.player, 1))
+                if empty_variable + 83 != 98:
+                    add_rule(self.get_location(str(self.location_id_to_name[83 + empty_variable])),
+                             lambda state: state.has("Party Style", self.player, 1))
                 # print(str(self.location_id_to_name[83 + empty_variable]) + " is now locked behind party")
                 empty_variable += 1
 
         if self.options.demo:
-            empty_variable = 1
+            empty_variable = 2
             while empty_variable != 20:
                 # print(str(self.location_id_to_name[104 + empty_variable]))
                 add_rule(self.get_location(str(self.location_id_to_name[104 + empty_variable])),
                          lambda state: state.has("Demo Style", self.player, 1))
                 # print(str(self.location_id_to_name[104 + empty_variable]) + " is now locked behind demo")
                 empty_variable += 1
-
-        empty_variable = 0
-        while empty_variable != 7:
-            add_rule(self.get_location(str(self.location_id_to_name[empty_variable + 1])),
-                     lambda state: state.has("Classic Style", self.player, 1) or state.has("Party Style", self.player, 1) or state.has("Demo Mode", self.player, 1) and state.has("Number Balloons",
-                    self.player, 1) and state.has("Number Balloon Receptacle", self.player, 1))
-            empty_variable += 1
 
         bsoda1 = self.get_location("Classic Mode - BSODA Machine (Cafeteria)")
         add_rule(bsoda1, lambda state: state.has("Quarter", self.player, 2))
@@ -567,8 +578,13 @@ class BBCRWorld(World):
         add_rule(zesty1, lambda state: state.has("Quarter", self.player, 2))
 
         # quarter reward
-        quarter = self.get_location("Classic Mode - Baldi's Quarter Reward")
-        add_rule(quarter, lambda state: state.has("Notebook", self.player, 1))
+        if self.options.required_route != 1:
+            quarter = self.get_location("Classic Mode - Baldi's Quarter Reward")
+            add_rule(quarter, lambda state: state.has("Notebook", self.player, 1) and state.has("Classic Style", self.player, 1))
+            if self.options.demo:
+                add_rule(self.get_location("Demo Mode - Baldi's Quarter Reward"), lambda state: state.has("Notebook", self.player, 1) and state.has("Demo Style", self.player, 1))
+            if self.options.party:
+                add_rule(self.get_location("Party Mode - Baldi's Present Reward"), lambda state: state.has("Notebook", self.player, 1) and state.has("Party Style", self.player, 1))
 
         # item usage
         if self.options.item_usage:
@@ -613,15 +629,15 @@ class BBCRWorld(World):
         # visualize_regions(self.multiworld.get_region("Menu", self.player), f"{self.player_name}_BBCR_world.puml", show_entrance_names=True, regions_to_highlight=self.multiworld.get_all_state(self.player).reachable_regions[self.player])
 
     def generate_basic(self) -> None:
-        state: CollectionState = self.multiworld.get_all_state()
-        state.update_reachable_regions(self.player)
-        reachable_regions: set[Region] = set(state.reachable_regions[self.player])
-        unreachable_regions: set[Region] = set()  # type: ignore
-        for region in self.multiworld.regions:
-            if region not in reachable_regions:
-                unreachable_regions.add(region)
-        visualize_regions(root_region=self.get_region(region_name="Menu"), file_name=f"{self.player_name}_world.puml",
-                          show_entrance_names=True, regions_to_highlight=unreachable_regions)
+        # state: CollectionState = self.multiworld.get_all_state()
+        # state.update_reachable_regions(self.player)
+        # reachable_regions: set[Region] = set(state.reachable_regions[self.player])
+        # unreachable_regions: set[Region] = set()  # type: ignore
+        # for region in self.multiworld.regions:
+        #     if region not in reachable_regions:
+        #         unreachable_regions.add(region)
+        # visualize_regions(root_region=self.get_region(region_name="Menu"), file_name=f"{self.player_name}_world.puml",
+        #                   show_entrance_names=True, regions_to_highlight=unreachable_regions)
 
         return super().generate_basic()
 

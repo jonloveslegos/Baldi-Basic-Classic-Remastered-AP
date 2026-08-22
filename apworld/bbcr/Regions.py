@@ -590,11 +590,11 @@ def connect_entrances(world) -> None:
 
 
     if world.options.notechecks:
-        connect(world, "Notebook 1 Questions Entrance", "Notebook 1 Room", "Notebook 1 Questions")
-        connect(world, "Notebook 2 Questions Entrance", "Notebook 2 Room", "Notebook 2 Questions")
-        connect(world, "Notebook 3 Questions Entrance", "Notebook 3 Room", "Notebook 3 Questions")
-        connect(world, "Notebook 4 Questions Entrance", "Notebook 4 Room", "Notebook 4 Questions")
-        connect(world, "Notebook 5 Questions Entrance", "Notebook 5 Room", "Notebook 5 Questions")
-        connect(world, "Notebook 6 Questions Entrance", "Notebook 6 Room", "Notebook 6 Questions")
-        connect(world, "Notebook 7 Questions Entrance", "Notebook 7 Room", "Notebook 7 Questions")
+        connect(world, "Notebook 1 Questions Entrance", "Notebook 1 Room", "Notebook 1 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 2 Questions Entrance", "Notebook 2 Room", "Notebook 2 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 3 Questions Entrance", "Notebook 3 Room", "Notebook 3 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 4 Questions Entrance", "Notebook 4 Room", "Notebook 4 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 5 Questions Entrance", "Notebook 5 Room", "Notebook 5 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 6 Questions Entrance", "Notebook 6 Room", "Notebook 6 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
+        connect(world, "Notebook 7 Questions Entrance", "Notebook 7 Room", "Notebook 7 Questions", lambda state: state.has("Demo Style", world.player) or state.has("Classic Style", world.player) or state.has("Party Style", world.player))
 

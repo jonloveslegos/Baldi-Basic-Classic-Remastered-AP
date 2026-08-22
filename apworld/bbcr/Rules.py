@@ -8,73 +8,74 @@ from BaseClasses import CollectionState
 
 def set_location_rules(world: "BBCRWorld") -> None:
 
-    yellow_door_west_start = world.get_location("Passed Through Yellow Swinging Door - West of Start")
-    add_rule(yellow_door_west_start, lambda state: state.has("Yellow Swinging Door - West of Start", world.player, 1))
+    if world.options.doorsanity:
+        yellow_door_west_start = world.get_location("Passed Through Yellow Swinging Door - West of Start")
+        add_rule(yellow_door_west_start, lambda state: state.has("Yellow Swinging Door - West of Start", world.player, 1))
 
-    yellow_door_east_start = world.get_location("Passed Through Yellow Swinging Door - East of Start")
-    add_rule(yellow_door_east_start, lambda state: state.has("Yellow Swinging Door - East of Start", world.player, 1))
+        yellow_door_east_start = world.get_location("Passed Through Yellow Swinging Door - East of Start")
+        add_rule(yellow_door_east_start, lambda state: state.has("Yellow Swinging Door - East of Start", world.player, 1))
 
-    yellow_door_north_start = world.get_location("Passed Through Yellow Swinging Door - North of Start")
-    add_rule(yellow_door_north_start, lambda state: state.has("Yellow Swinging Door - North of Start", world.player, 1))
+        yellow_door_north_start = world.get_location("Passed Through Yellow Swinging Door - North of Start")
+        add_rule(yellow_door_north_start, lambda state: state.has("Yellow Swinging Door - North of Start", world.player, 1))
 
-    yellow_door_east_cafe = world.get_location("Passed Through Yellow Swinging Door - East of Cafe")
-    add_rule(yellow_door_east_cafe, lambda state: state.has("Yellow Swinging Door - Cafeteria East", world.player, 1))
+        yellow_door_east_cafe = world.get_location("Passed Through Yellow Swinging Door - East of Cafe")
+        add_rule(yellow_door_east_cafe, lambda state: state.has("Yellow Swinging Door - Cafeteria East", world.player, 1))
 
-    yellow_door_west_cafe = world.get_location("Passed Through Yellow Swinging Door - West of Cafe")
-    add_rule(yellow_door_west_cafe, lambda state: state.has("Yellow Swinging Door - Cafeteria West", world.player, 1))
+        yellow_door_west_cafe = world.get_location("Passed Through Yellow Swinging Door - West of Cafe")
+        add_rule(yellow_door_west_cafe, lambda state: state.has("Yellow Swinging Door - Cafeteria West", world.player, 1))
 
-    yellow_door_det_r = world.get_location("Passed Through Yellow Swinging Door - Right of Detention")
-    add_rule(yellow_door_det_r, lambda state: state.has("Yellow Swinging Door - Right of Detention", world.player, 1))
+        yellow_door_det_r = world.get_location("Passed Through Yellow Swinging Door - Right of Detention")
+        add_rule(yellow_door_det_r, lambda state: state.has("Yellow Swinging Door - Right of Detention", world.player, 1))
 
-    yellow_door_det_l = world.get_location("Passed Through Yellow Swinging Door - Left of Detention")
-    add_rule(yellow_door_det_l, lambda state: state.has("Yellow Swinging Door - Left of Detention", world.player, 1))
+        yellow_door_det_l = world.get_location("Passed Through Yellow Swinging Door - Left of Detention")
+        add_rule(yellow_door_det_l, lambda state: state.has("Yellow Swinging Door - Left of Detention", world.player, 1))
 
-    yellow_door_ne = world.get_location("Passed Through Yellow Swinging Door - North-East Halls")
-    add_rule(yellow_door_ne, lambda state: state.has("Yellow Swinging Door - North-East Halls", world.player, 1))
+        yellow_door_ne = world.get_location("Passed Through Yellow Swinging Door - North-East Halls")
+        add_rule(yellow_door_ne, lambda state: state.has("Yellow Swinging Door - North-East Halls", world.player, 1))
 
-    # 99 doors
-    nine_door_west_start = world.get_location("Passed Through 99 Door - West Starting Class")
-    add_rule(nine_door_west_start, lambda state: state.has("99 Door - Starting Classroom West", world.player, 1))
+        # 99 doors
+        nine_door_west_start = world.get_location("Passed Through 99 Door - West Starting Class")
+        add_rule(nine_door_west_start, lambda state: state.has("99 Door - Starting Classroom West", world.player, 1))
 
-    nine_door_east_start = world.get_location("Passed Through 99 Door - East Starting Class")
-    add_rule(nine_door_east_start, lambda state: state.has("99 Door - Starting Classroom East", world.player, 1))
+        nine_door_east_start = world.get_location("Passed Through 99 Door - East Starting Class")
+        add_rule(nine_door_east_start, lambda state: state.has("99 Door - Starting Classroom East", world.player, 1))
 
-    nine_door_center = world.get_location("Passed Through 99 Door - Center Middle Class")
-    add_rule(nine_door_center, lambda state: state.has("99 Door - Classroom Near Center", world.player, 1))
+        nine_door_center = world.get_location("Passed Through 99 Door - Center Middle Class")
+        add_rule(nine_door_center, lambda state: state.has("99 Door - Classroom Near Center", world.player, 1))
 
-    nine_door_north_cafe = world.get_location("Passed Through 99 Door - Class Facing East Cafe")
-    add_rule(nine_door_north_cafe, lambda state: state.has("99 Door - Classroom West of Cafeteria", world.player, 1))
+        nine_door_north_cafe = world.get_location("Passed Through 99 Door - Class Facing East Cafe")
+        add_rule(nine_door_north_cafe, lambda state: state.has("99 Door - Classroom West of Cafeteria", world.player, 1))
 
-    nine_door_south_of_cafe = world.get_location("Passed Through 99 Door - Class North Facing Cafe")
-    add_rule(nine_door_south_of_cafe, lambda state: state.has("99 Door - Classroom South of Cafeteria", world.player, 1))
+        nine_door_south_of_cafe = world.get_location("Passed Through 99 Door - Class North Facing Cafe")
+        add_rule(nine_door_south_of_cafe, lambda state: state.has("99 Door - Classroom South of Cafeteria", world.player, 1))
 
-    nine_door_east_hall = world.get_location("Passed Through 99 Door - East Hall Class")
-    add_rule(nine_door_east_hall, lambda state: state.has("99 Door - Classroom in North East Halls", world.player, 1))
+        nine_door_east_hall = world.get_location("Passed Through 99 Door - East Hall Class")
+        add_rule(nine_door_east_hall, lambda state: state.has("99 Door - Classroom in North East Halls", world.player, 1))
 
-    nine_door_east_exit = world.get_location("Passed Through 99 Door - Class by East Exit")
-    add_rule(nine_door_east_exit, lambda state: state.has("99 Door - Classroom by East Exit", world.player, 1))
+        nine_door_east_exit = world.get_location("Passed Through 99 Door - Class by East Exit")
+        add_rule(nine_door_east_exit, lambda state: state.has("99 Door - Classroom by East Exit", world.player, 1))
 
-    # Faculty Doors
-    fac_door_south = world.get_location("Passed Through School Faculty Door - South")
-    add_rule(fac_door_south, lambda state: state.has("School Faculty Door - South", world.player, 1))
+        # Faculty Doors
+        fac_door_south = world.get_location("Passed Through School Faculty Door - South")
+        add_rule(fac_door_south, lambda state: state.has("School Faculty Door - South", world.player, 1))
 
-    fac_door_connec = world.get_location("Passed Through School Faculty Door - Joining Two SF Rooms")
-    add_rule(fac_door_connec, lambda state: state.has("School Faculty Door - Connecting Rooms", world.player, 1))
+        fac_door_connec = world.get_location("Passed Through School Faculty Door - Joining Two SF Rooms")
+        add_rule(fac_door_connec, lambda state: state.has("School Faculty Door - Connecting Rooms", world.player, 1))
 
-    fac_door_center = world.get_location("Passed Through School Faculty Door - Near Center")
-    add_rule(fac_door_center, lambda state: state.has("School Faculty Door - Center", world.player, 1))
+        fac_door_center = world.get_location("Passed Through School Faculty Door - Near Center")
+        add_rule(fac_door_center, lambda state: state.has("School Faculty Door - Center", world.player, 1))
 
-    fac_door_east = world.get_location("Passed Through School Faculty Door - Near East Exit")
-    add_rule(fac_door_east, lambda state: state.has("School Faculty Door - East Halls", world.player, 1))
+        fac_door_east = world.get_location("Passed Through School Faculty Door - Near East Exit")
+        add_rule(fac_door_east, lambda state: state.has("School Faculty Door - East Halls", world.player, 1))
 
-    fac_door_cafe = world.get_location("Passed Through School Faculty Door - by Cafe")
-    add_rule(fac_door_cafe, lambda state: state.has("School Faculty Door - South East of Cafeteria", world.player, 1))
+        fac_door_cafe = world.get_location("Passed Through School Faculty Door - by Cafe")
+        add_rule(fac_door_cafe, lambda state: state.has("School Faculty Door - South East of Cafeteria", world.player, 1))
 
-    fac_door_west = world.get_location("Passed Through School Faculty Door - Near West Exit")
-    add_rule(fac_door_west, lambda state: state.has("School Faculty Door - West by Exit", world.player, 1))
+        fac_door_west = world.get_location("Passed Through School Faculty Door - Near West Exit")
+        add_rule(fac_door_west, lambda state: state.has("School Faculty Door - West by Exit", world.player, 1))
 
-    closet = world.get_location("Passed Through Supply Closet Door")
-    add_rule(closet, lambda state: state.has("Supply Closet Door", world.player, 1))
+        closet = world.get_location("Passed Through Supply Closet Door")
+        add_rule(closet, lambda state: state.has("Supply Closet Door", world.player, 1))
 
     # Exits
     south_exit = world.get_location("Activated South Exit")

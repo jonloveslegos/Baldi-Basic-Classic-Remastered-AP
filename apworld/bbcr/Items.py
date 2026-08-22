@@ -1,5 +1,11 @@
-from BaseClasses import Item
+from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+from BaseClasses import Item, ItemClassification\
+
+if TYPE_CHECKING:
+    from . import BBCRWorld
 
 
 class BBCRItem(Item):
@@ -64,12 +70,14 @@ item_table = {
     "Demo Style": 46,
     "Classic Style": 47,
 
-    "Number Balloons": 48,
-    "Number Balloon Receptacle": 49,
+    "Classic Style Notebook": 48,
+    "Party Style Notebook": 49,
+    "Demo Style Notebook": 50,
 
-    "Classic Style Notebook": 50,
-    "Party Style Notebook": 51,
-    "Demo Style Notebook": 52,
-
-    "Random Event (Trap)": 53,
+    "Random Event (Trap)": 51,
 }
+
+def create_items_and_append(world: "BBCRWorld", name: str, classification: ItemClassification, amount: int = 1) -> None:
+    for _ in range(amount):
+        world.multiworld.itempool.append(Item(name=name, code=world.item_name_to_id[name], classification=classification, player=world.player))
+        world.unplaced_items -= 1
