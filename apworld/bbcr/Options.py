@@ -21,7 +21,7 @@ class RandomDemo(Toggle):
     display_name = "Randomize Demo"
     default = False
 
-class WhichStyle(Choice):
+class StartingStyle(Choice):
     """Which style do you want to start with?"""
     display_name = "Which Style"
     option_classic = 0
@@ -75,7 +75,7 @@ class BBCROptions(PerGameCommonOptions):
     required_route: RequiredRoute
     party: RandomParty
     demo: RandomDemo
-    which_style: WhichStyle
+    which_style: StartingStyle
     req_style: ReqGoal
     notechecks: ExtraNotebookChecks
     doorsanity: Doorsanity
@@ -89,8 +89,10 @@ option_definitions = {
     "required_route": RequiredRoute,
 }
 
-option_groups = [
-    OptionGroup("Gameplay Options", [RequiredRoute, ExtraNotebookChecks, ItemUsage]),
+option_groups_list = [
+    OptionGroup("Base Options", [RandomParty, RandomDemo, RequiredRoute, StartingStyle, ReqGoal]),
+
+    OptionGroup("Extra Options", [ExtraNotebookChecks, Doorsanity, ItemUsage]),
 
     OptionGroup("Trap Options", [Traps, Trap_Weight]),
 
