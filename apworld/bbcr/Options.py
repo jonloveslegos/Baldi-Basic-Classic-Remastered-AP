@@ -56,19 +56,53 @@ class ExtraNotebookChecks(Toggle):
 
 class ItemUsage(Toggle):
     """Turns items like the Scissors progressive, and adds locations for their usage.
-    for example, using the scissors on Playtime or using the Principal's Keys on the Dentention door."""
+for example, using the scissors on Playtime or using the Principal's Keys on the Dentention door."""
     display_name = "Item Usage"
     default = False
 
 class Doorsanity(Toggle):
     """Adds the 99 doors, School Faculty Doors, and the Yellow Swinging Doors to the itempool.
-    Passing through doors are now checks. :)
+Passing through doors are now checks. :)
 
     I should also mention that when Notesanity is off and Req Route is Terrible, this will give
     you another door to start with so that it doesn't break, crash, or throw any errors in my face.
     thank you."""
     display_name = "Door Sanity"
     default = False
+
+class NorthLogic(Toggle):
+    """When enabled, this option makes it possible (not guaranteed!) that the game will expect you to
+go north towards Baldi to get into the school halls. Would only recommend if you are good at the
+game.
+
+    ONLY WORKS WITH DOORSANITY!"""
+    display_name = "North Yellow Door Logic"
+    default = False
+
+class ItemBehindItem(Toggle):
+    """When enabled, this option will make sure that items will not be placed behind their
+locations. For example, a Zesty Bar cannot be placed behind "Used a Zesty Bar".
+
+    ONLY WORKS WITH ITEM USAGE CHECKS!"""
+    display_name = "Item Behind Items"
+    default = False
+
+class YellowDoorNorth(Toggle):
+    """When enabled, this option will make sure that the Yellow Swinging Door North of Start is NOT
+the first yellow swinging door that the logic expects you to get to the halls through. It's really
+only possible if either you're really skilled, or have a BSODA or two.
+
+    ONLY WORKS WITH DOORSANITY!"""
+    display_name = "North Yellow Door Logic"
+    default = True
+
+class GlitchedNotebook(Toggle):
+    """When enabled, this will make the glitched notebooks at the end of Party Mode
+locations. This will not add anymore Notebook items to the itempool.
+
+ONLY WORKS IF PARTY MODE IS ON!!!"""
+    display_name = "Glitched Notebook Checks"
+    default = True
 
 @dataclass
 class BBCROptions(PerGameCommonOptions):
@@ -82,7 +116,11 @@ class BBCROptions(PerGameCommonOptions):
     item_usage: ItemUsage
     funny_traps: Traps
     trap_weight: Trap_Weight
+    north_logic: NorthLogic
+    gnotebooks: GlitchedNotebook
     death_link: DeathLink
+    itemitem: ItemBehindItem
+    yndoorlogic: YellowDoorNorth
 
 
 option_definitions = {
@@ -92,9 +130,11 @@ option_definitions = {
 option_groups_list = [
     OptionGroup("Base Options", [RandomParty, RandomDemo, RequiredRoute, StartingStyle, ReqGoal]),
 
-    OptionGroup("Extra Options", [ExtraNotebookChecks, Doorsanity, ItemUsage]),
+    OptionGroup("Extra Options", [GlitchedNotebook, ExtraNotebookChecks, Doorsanity, ItemUsage]),
 
     OptionGroup("Trap Options", [Traps, Trap_Weight]),
+
+    OptionGroup("Logic Options", [NorthLogic, ItemBehindItem, YellowDoorNorth]),
 
     OptionGroup("Death Link", [DeathLink]),
 ]

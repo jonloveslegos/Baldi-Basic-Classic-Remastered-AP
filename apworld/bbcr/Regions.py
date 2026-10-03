@@ -393,6 +393,21 @@ def create_regions(world):
         regbook7.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regbook7) for loc_name in locbook7_names]
         multiworld.regions.append(regbook7)
 
+    if world.options.party:
+        if world.options.gnotebooks:
+            regnote8n9 = Region("Notebook 8 and 9", player, multiworld, "Notebook 8 and 9")
+            locnote8n9_names = ["Party Mode - Notebook 8", "Party Mode - Notebook 9"]
+            regnote8n9.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote8n9) for loc_name in locnote8n9_names]
+            multiworld.regions.append(regnote8n9)
+
+            if world.options.notechecks:
+                regbook8n9 = Region("Notebook 8 and 9 Questions", player, multiworld, "Notebook 8 and 9 Questions")
+                locbook8n9_names = ["Notebook 8 Question 1", "Notebook 8 Question 2", "Notebook 8 Question 3", "Notebook 9 Question 1", "Notebook 9 Question 2", "Notebook 9 Question 3"]
+                regbook8n9.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regbook8n9) for loc_name
+                                         in locbook8n9_names]
+                multiworld.regions.append(regbook8n9)
+
+
 
     regnorthexit = Region("North Exit", player, multiworld, "North Exit")
     multiworld.regions.append(regnorthexit)
@@ -442,6 +457,12 @@ def connect_entrances(world) -> None:
     connect(world, "East Exit", "East Exit", "Exit", lambda state: state.has("Notebook", world.player, 7))
     connect(world, "South Exit", "South Exit", "Exit", lambda state: state.has("Notebook", world.player, 7))
 
+    if world.options.party:
+        if world.options.gnotebooks:
+            connect(world, "Glitched Notebook Area", "Exit", "Notebook 8 and 9", lambda state: state.has("Party Style", world.player, 1))
+            if world.options.notechecks:
+                connect(world, "Notebook 8 and 9 Notebook Connections", "Notebook 8 and 9", "Notebook 8 and 9 Questions")
+
     if not world.options.doorsanity:
 
         #double doors lock
@@ -487,10 +508,22 @@ def connect_entrances(world) -> None:
         connect(world, "West Start Yellow Doors -> Halls", "West Start Yellow Door", "Halls",
                 lambda state: state.has("Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player, 1) and state.has("99 Door - Starting Classroom East", world.player, 1))
 
-        connect(world, "Start -> North Start Yellow Doors", "Starting Halls", "North Start Yellow Door",
-                lambda state: state.has("Yellow Swinging Door - North of Start", world.player) and state.has("Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player, 1) and state.has("99 Door - Starting Classroom East", world.player, 1))
-        connect(world, "North Start Yellow Doors -> Halls", "North Start Yellow Door", "Halls",
-                lambda state: state.has("Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player, 1) and state.has("99 Door - Starting Classroom East", world.player, 1))
+        if not world.options.yndoorlogic:
+            connect(world, "Start -> North Start Yellow Doors", "Starting Halls", "North Start Yellow Door",
+                    lambda state: state.has("Yellow Swinging Door - North of Start", world.player) and state.has("Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player, 1) and state.has("99 Door - Starting Classroom East", world.player, 1))
+            connect(world, "North Start Yellow Doors -> Halls", "North Start Yellow Door", "Halls",
+                    lambda state: state.has("Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player, 1) and state.has("99 Door - Starting Classroom East", world.player, 1))
+        else:
+            connect(world, "Start -> North Start Yellow Doors", "Starting Halls", "North Start Yellow Door",
+                    lambda state: state.has("Yellow Swinging Door - North of Start", world.player) and state.has(
+                        "Notebook", world.player, 2) and state.has("99 Door - Starting Classroom West", world.player,
+                                                                   1) and state.has("99 Door - Starting Classroom East",
+                                                                                    world.player, 1) and state.has("Notebook", world.player, 4) and
+                                  state.has("Yellow Swinging Door - East of Start", 1) or state.has("Yellow Swinging Door - West of Start", 1))
+            connect(world, "North Start Yellow Doors -> Halls", "North Start Yellow Door", "Halls",
+                    lambda state: state.has("Notebook", world.player, 2) and state.has(
+                        "99 Door - Starting Classroom West", world.player, 1) and state.has(
+                        "99 Door - Starting Classroom East", world.player, 1) and state.has("Notebook", world.player, 4))
 
         connect(world, "Start -> West 99 Door", "Starting Halls", "West Start 99 Door",
                 lambda state: state.has("99 Door - Starting Classroom West", world.player))

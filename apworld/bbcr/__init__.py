@@ -13,7 +13,7 @@ from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, MultiWorld, CollectionState
 from .Regions import create_regions, connect_entrances
 from . import Rules
-from ..generic.Rules import set_rule, add_rule
+from ..generic.Rules import set_rule, add_rule, forbid_item
 
 
 class BBCRWeb(WebWorld):
@@ -56,6 +56,74 @@ class BBCRWorld(World):
     # from that group has been collected. Group names can also be used for !hint
     item_name_groups = {
         "Notebooks": {"Notebook"},
+        "Items": {"Quarter", "BSODA", "Zesty Bar", "Baldi's Least Favorite Tape", "Saftey Scissors", "Big 'Ol Boots", "WD-NoSquee", "Alarm Clock", "Principal's Keys", "Swinging Door Lock"},
+        "Doors": {"School Faculty Door - South", "School Faculty Door - West by Exit", "School Faculty Door - Center", "School Faculty Door - East Halls",
+                                 "School Faculty Door - Connecting Rooms", "School Faculty Door - South East of Cafeteria", "99 Door - Starting Classroom West", "99 Door - Starting Classroom East", "99 Door - Classroom Near Center", "99 Door - Classroom South of Cafeteria", "99 Door - West of Cafeteria",
+                     "99 Door - Classroom by East Exit", "99 Door - Classroom in North East Halls", "Yellow Swinging Door - North of Start", "Yellow Swinging Door - West of Start", "Yellow Swinging Door - East of Start", "Yellow Swinging Door - Cafeteria West", "Yellow Swinging Door - Cafeteria East",
+                                  "Yellow Swinging Door - Right of Detention", "Yellow Swinging Door - Left of Detention", "Yellow Swinging Door - North-East Halls"},
+        "Exits": {"North Exit", "South Exit", "West Exit", "East Exit"},
+        "School Faculty Doors": {"School Faculty Door - South", "School Faculty Door - West by Exit", "School Faculty Door - Center", "School Faculty Door - East Halls",
+                                 "School Faculty Door - Connecting Rooms", "School Faculty Door - South East of Cafeteria"},
+        "99 Doors": {"99 Door - Starting Classroom West", "99 Door - Starting Classroom East", "99 Door - Classroom Near Center", "99 Door - Classroom South of Cafeteria", "99 Door - West of Cafeteria",
+                     "99 Door - Classroom by East Exit", "99 Door - Classroom in North East Halls"},
+        "Yellow Swinging Doors": {"Yellow Swinging Door - North of Start", "Yellow Swinging Door - West of Start", "Yellow Swinging Door - East of Start", "Yellow Swinging Door - Cafeteria West", "Yellow Swinging Door - Cafeteria East",
+                                  "Yellow Swinging Door - Right of Detention", "Yellow Swinging Door - Left of Detention", "Yellow Swinging Door - North-East Halls"},
+    }
+
+    location_name_groups = {
+        "Notebooks": {"Notebook 1", "Notebook 2", "Notebook 3", "Notebook 4", "Notebook 5", "Notebook 6", "Notebook 7", "Party Mode - Notebook 8", "Party Mode - Notebook 9"},
+
+        "Notebook Questions": {"Notebook 1 Question 1", "Notebook 1 Question 2", "Notebook 1 Question 3", "Notebook 2 Question 1", "Notebook 2 Question 2", "Notebook 2 Question 3",
+        "Notebook 3 Question 1", "Notebook 3 Question 2", "Notebook 3 Question 3", "Notebook 4 Question 1", "Notebook 4 Question 2", "Notebook 4 Question 3", "Notebook 5 Question 1",
+        "Notebook 5 Question 2", "Notebook 5 Question 3", "Notebook 6 Question 1", "Notebook 6 Question 2", "Notebook 6 Question 3", "Notebook 7 Question 1", "Notebook 7 Question 2",
+        "Notebook 7 Question 3", "Notebook 8 Question 1", "Notebook 8 Question 2", "Notebook 8 Question 3", "Notebook 9 Question 1", "Notebook 9 Question 2", "Notebook 9 Question 3"},
+
+        "Items": {"Used Scissors", "Escaped Detention With Keys", "Used Zesty Bar", "Used BSODA", "Used Baldi's Least Favorite Tape", "Used the Yellow Swinging Door Lock",
+        "Used the Alarm Clock", "Used the WD-NoSquee", "Used the Big 'Ol Boots", "Used a Quarter"},
+
+        "Classic Mode": {"Classic Mode - Baldi's Quarter Reward", "Classic Mode - Zesty Bar Pickup (School Faculty Room)",
+        "Classic Mode - Baldi's Least Favorite Tape Pickup (School Faculty Room)", "Classic Mode - Swinging Door Lock Pickup (School Faculty Room)",
+        "Classic Mode - Principal's Keys Pickup (School Faculty Room)", "Classic Mode - WD-NoSquee Pickup (School Faculty Room)", "Classic Mode - Zesty Bar Machine (School Faculty Room)",
+        "Classic Mode - Alarm Clock (School Faculty Room)", "Classic Mode - Quarter Pickup (School Faculty Room)", "Classic Mode - BSODA Machine (Halls)",
+        "Classic Mode - Quarter Pickup (Halls)", "Classic Mode - Scissors Pickup (Notebook 3 Room)", "Classic Mode - Scissors Pickup (Notebook 4 Room)",
+        "Classic Mode - Big 'Ol Boots Pickup (Notebook 5 Room)", "Classic Mode - Scissors Pickup (Notebook 7 Room)", "Classic Mode - WD-NoSquee Pickup (Supply Closet)",
+        "Classic Mode - Zesty Bar Pickup (Cafeteria)", "Classic Mode - BSODA Machine (Cafeteria)", "Classic Mode - BSODA Pickup (Cafeteria)"},
+
+        "Party Mode": {"Party Mode - Cafe Present #1", "Party Mode - Cafe Present #2", "Party Mode - South School Faculty Present", "Party Mode - Center School Faculty Present",
+        "Party Mode - West School Faculty Present #1", "Party Mode - West School Faculty Present #2", "Party Mode - Notebook 3 Room Present #1", "Party Mode - Notebook 3 Room Present #2",
+        "Party Mode - Notebook 4 Room Present", "Party Mode - Notebook 5 Room Present #1", "Party Mode - Notebook 5 Room Present #2", "Party Mode - Notebook 6 Room Present",
+        "Party Mode - Notebook 7 Room Present", "Party Mode - Supply Closet Present", "Party Mode - Baldi's Present Reward", "Party Mode - East School Faculty Present",
+        "Party Mode - Halls Fun Item Machine", "Party Mode - Cafe Fun Item Machine", "Party Mode - School Faculty Fun Item Machine", "Party Mode - Cafe School Faculty Present #1",
+        "Party Mode - Cafe School Faculty Present #2", "Party Mode - Notebook 8", "Party Mode - Notebook 9"},
+
+        "Demo Mode": {"Demo Mode - Baldi's Quarter Reward", "Demo Mode - Item Pickup #1 (East School Faculty Room)", "Demo Mode - Item Pickup #2 (East School Faculty Room)",
+        "Demo Mode - Item Pickup #1 (Center School Faculty Room)", "Demo Mode - Item Pickup #2 (Center School Faculty Room)", "Demo Mode - Item Pickup (South School Faculty Room)",
+        "Demo Mode - Zesty Bar Machine (School Faculty Room)", "Demo Mode - Item Pickup #1 (Cafe School Faculty Room)", "Demo Mode - Item Pickup #2 (Cafe School Faculty Room)",
+        "Demo Mode - BSODA Machine (Halls)", "Demo Mode - Quarter Pickup (Halls)", "Demo Mode - Item Pickup (Notebook 3 Room)", "Demo Mode - Item Pickup (Notebook 4 Room)",
+        "Demo Mode - Item Pickup (Notebook 5 Room)", "Demo Mode - Item Pickup #1 (Notebook 7 Room)", "Demo Mode - Item Pickup #2 (Notebook 7 Room)",
+        "Demo Mode - Item Pickup #1 (Cafeteria)", "Demo Mode - Item Pickup #2 (Cafeteria)", "Demo Mode - BSODA Machine (Cafeteria)"},
+
+        "99 Doors": {"Passed Through 99 Door - West Starting Class", "Passed Through 99 Door - East Starting Class", "Passed Through 99 Door - Center Middle Class",
+        "Passed Through 99 Door - Class North Facing Cafe", "Passed Through 99 Door - Class Facing East Cafe", "Passed Through 99 Door - East Hall Class",
+        "Passed Through 99 Door - Class by East Exit"},
+
+        "Yellow Swinging Doors": {"Passed Through Yellow Swinging Door - Left of Detention", "Passed Through Yellow Swinging Door - North-East Halls",
+        "Passed Through Yellow Swinging Door - Right of Detention", "Passed Through Yellow Swinging Door - West of Cafe", "Passed Through Yellow Swinging Door - East of Cafe",
+        "Passed Through Yellow Swinging Door - North of Start", "Passed Through Yellow Swinging Door - East of Start", "Passed Through Yellow Swinging Door - West of Start"},
+
+        "School Faculty Doors": {"Passed Through School Faculty Door - South", "Passed Through School Faculty Door - Joining Two SF Rooms", "Passed Through School Faculty Door - Near Center",
+        "Passed Through School Faculty Door - Near East Exit", "Passed Through School Faculty Door - by Cafe", "Passed Through School Faculty Door - Near West Exit"},
+
+        "Doors": {"Passed Through 99 Door - West Starting Class", "Passed Through 99 Door - East Starting Class", "Passed Through 99 Door - Center Middle Class",
+        "Passed Through 99 Door - Class North Facing Cafe", "Passed Through 99 Door - Class Facing East Cafe", "Passed Through 99 Door - East Hall Class",
+        "Passed Through 99 Door - Class by East Exit", "Passed Through Yellow Swinging Door - Left of Detention", "Passed Through Yellow Swinging Door - North-East Halls",
+        "Passed Through Yellow Swinging Door - Right of Detention", "Passed Through Yellow Swinging Door - West of Cafe", "Passed Through Yellow Swinging Door - East of Cafe",
+        "Passed Through Yellow Swinging Door - North of Start", "Passed Through Yellow Swinging Door - East of Start", "Passed Through Yellow Swinging Door - West of Start",
+        "Passed Through School Faculty Door - South", "Passed Through School Faculty Door - Joining Two SF Rooms", "Passed Through School Faculty Door - Near Center",
+        "Passed Through School Faculty Door - Near East Exit", "Passed Through School Faculty Door - by Cafe", "Passed Through School Faculty Door - Near West Exit",
+        "Passed Through Supply Closet Door"},
+
+        "Exits": {"Activated East Exit", "Activated West Exit", "Activated South Exit", "Activated North Exit"},
     }
 
 
@@ -629,6 +697,34 @@ class BBCRWorld(World):
 
             clock_use = self.get_location("Used the Alarm Clock")
             add_rule(clock_use, lambda state: state.has("Alarm Clock", self.player, 1))
+
+            if self.options.itemitem:
+                bupp = 71
+                while bupp != 81:
+                    location = self.get_location(str(self.location_id_to_name[bupp]))
+                    if bupp == 71:
+                        item = "Safety Scissors"
+                    elif bupp == 72:
+                        item = "Principal's Keys"
+                    elif bupp == 73:
+                        item = "Zesty Bar"
+                    elif bupp == 74:
+                        item = "BSODA"
+                    elif bupp == 75:
+                        item = "Baldi's Least Favorite Tape"
+                    elif bupp == 76:
+                        item = "Swinging Door Lock"
+                    elif bupp == 77:
+                        item = "Alarm Clock"
+                    elif bupp == 78:
+                        item = "WD-NoSquee"
+                    elif bupp == 79:
+                        item = "Big 'Ol Boots"
+                    elif bupp == 80:
+                        item = "Quarter"
+                    forbid_item(location, item, player=self.player),
+                    bupp += 1
+                    print("Blocked " + str(item) + " from being at " + str(location))
 
 
 

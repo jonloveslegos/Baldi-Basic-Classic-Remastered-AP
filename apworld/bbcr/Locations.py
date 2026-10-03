@@ -168,6 +168,17 @@ location_table = {
     "Demo Mode - Item Pickup #2 (Cafeteria)": 122,
     "Demo Mode - BSODA Machine (Cafeteria)": 123,
 
+    "Party Mode - Notebook 8": 124,
+    "Party Mode - Notebook 9": 125,
+
+    "Notebook 8 Question 1": 126,
+    "Notebook 8 Question 2": 127,
+    "Notebook 8 Question 3": 128,
+
+    "Notebook 9 Question 1": 129,
+    "Notebook 9 Question 2": 130,
+    "Notebook 9 Question 3": 131,
+
 
 
 
