@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
 from Options import Option, Range, Toggle, PerGameCommonOptions, DefaultOnToggle, DeathLink, Choice, OptionGroup
+# from WebHostLib.options import option_presets
 
 
 class RequiredRoute(Choice):
@@ -70,14 +71,14 @@ Passing through doors are now checks. :)
     display_name = "Door Sanity"
     default = False
 
-class NorthLogic(Toggle):
-    """When enabled, this option makes it possible (not guaranteed!) that the game will expect you to
-go north towards Baldi to get into the school halls. Would only recommend if you are good at the
-game.
-
-    ONLY WORKS WITH DOORSANITY!"""
-    display_name = "North Yellow Door Logic"
-    default = False
+# class NorthLogic(Toggle):
+#     """When enabled, this option makes it possible (not guaranteed!) that the game will expect you to
+# go north towards Baldi to get into the school halls. Would only recommend if you are good at the
+# game.
+#
+#     ONLY WORKS WITH DOORSANITY!"""
+#     display_name = "North Yellow Door Logic"
+#     default = False
 
 class ItemBehindItem(Toggle):
     """When enabled, this option will make sure that items will not be placed behind their
@@ -104,6 +105,27 @@ ONLY WORKS IF PARTY MODE IS ON!!!"""
     display_name = "Glitched Notebook Checks"
     default = True
 
+# class GameGoal(Choice):
+#     """Choose the Goal of this game's randomizer"""
+#     display_name = "Game Goal"
+#     option_certain_style = 1
+#     option_beat_null = 2
+#
+# class APMcGuffins(Range):
+#     """Number of Archipelanulls required to get to NULL Style
+#
+# If you don't want this, just set it to 0"""
+#     display_name = "Archipelanulls"
+#     range_start = 0
+#     range_end = 25
+#     default = 0
+#
+# class APMcPercent(Range):
+#     """Percentage of Archipelanulls required to get to NULL Style"""
+#     range_start = 0
+#     range_end = 100
+#     default = 50
+
 @dataclass
 class BBCROptions(PerGameCommonOptions):
     required_route: RequiredRoute
@@ -116,15 +138,70 @@ class BBCROptions(PerGameCommonOptions):
     item_usage: ItemUsage
     funny_traps: Traps
     trap_weight: Trap_Weight
-    north_logic: NorthLogic
+    # north_logic: NorthLogic
     gnotebooks: GlitchedNotebook
     death_link: DeathLink
     itemitem: ItemBehindItem
     yndoorlogic: YellowDoorNorth
 
 
+
 option_definitions = {
     "required_route": RequiredRoute,
+}
+
+option_presets = {
+    "Vanilla Baldi": {
+        "required_route": 2,
+        "party": False,
+        "demo": False,
+        "which_style": 0,
+        "req_style": 0,
+        "notechecks": False,
+        "doorsanity": False,
+        "item_usage": False,
+        "funny_traps": False,
+        "trap_weight": 0,
+        # "north_logic": False,
+        "gnotebooks": False,
+        "death_link": False,
+        "itemitem": False,
+        "yndoorlogic": False,
+    },
+    "All Modes": {
+        "required_route": 2,
+        "party": True,
+        "demo": True,
+        "which_style": 0,
+        "req_style": 0,
+        "notechecks": False,
+        "doorsanity": False,
+        "item_usage": False,
+        "funny_traps": False,
+        "trap_weight": 0,
+        # "north_logic": False,
+        "gnotebooks": True,
+        "death_link": False,
+        "itemitem": False,
+        "yndoorlogic": False,
+    },
+    "Aboslute Insanity": {
+        "required_route": 2,
+        "party": True,
+        "demo": True,
+        "which_style": "random",
+        "req_style": "random",
+        "notechecks": True,
+        "doorsanity": True,
+        "item_usage": True,
+        "funny_traps": True,
+        "trap_weight": "random",
+        # "north_logic": True,
+        "gnotebooks": True,
+        "death_link": True,
+        "itemitem": False,
+        "yndoorlogic": False,
+    }
 }
 
 option_groups_list = [
@@ -134,7 +211,7 @@ option_groups_list = [
 
     OptionGroup("Trap Options", [Traps, Trap_Weight]),
 
-    OptionGroup("Logic Options", [NorthLogic, ItemBehindItem, YellowDoorNorth]),
+    OptionGroup("Logic Options", [ItemBehindItem, YellowDoorNorth]),
 
     OptionGroup("Death Link", [DeathLink]),
 ]

@@ -56,58 +56,77 @@ def create_regions(world):
 
     #regions for the notebook rooms
     regnote1 = Region("Notebook 1 Room", player, multiworld, "Notebook 1 Room")
-    locnote1_names = ["Notebook 1"]
+    locnote1_names = ["Classic Mode - Notebook 1"]
+    if world.options.party:
+        locnote1_names.append("Party Mode - Notebook 1")
+    if world.options.demo:
+        locnote1_names.append("Demo Mode - Notebook 1")
     regnote1.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote1) for loc_name in locnote1_names]
     multiworld.regions.append(regnote1)
 
     regnote2 = Region("Notebook 2 Room", player, multiworld, "Notebook 2 Room")
-    locnote2_names = ["Notebook 2"]
+    locnote2_names = ["Classic Mode - Notebook 2"]
+    if world.options.party:
+        locnote2_names.append("Party Mode - Notebook 2")
+    if world.options.demo:
+        locnote2_names.append("Demo Mode - Notebook 2")
     regnote2.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote2) for loc_name in locnote2_names]
     multiworld.regions.append(regnote2)
 
     regnote3 = Region("Notebook 3 Room", player, multiworld, "Notebook 3 Room")
-    locnote3_names = ["Notebook 3", "Classic Mode - Scissors Pickup (Notebook 3 Room)"]
+    locnote3_names = ["Classic Mode - Notebook 3", "Classic Mode - Scissors Pickup (Notebook 3 Room)"]
     if world.options.party:
         locnote3_names.append("Party Mode - Notebook 3 Room Present #1")
         locnote3_names.append("Party Mode - Notebook 3 Room Present #2")
+        locnote3_names.append("Party Mode - Notebook 3")
     if world.options.demo:
         locnote3_names.append("Demo Mode - Item Pickup (Notebook 3 Room)")
+        locnote3_names.append("Demo Mode - Notebook 3")
     regnote3.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote3) for loc_name in locnote3_names]
     multiworld.regions.append(regnote3)
 
     regnote4 = Region("Notebook 4 Room", player, multiworld, "Notebook 4 Room")
-    locnote4_names = ["Notebook 4", "Classic Mode - Scissors Pickup (Notebook 4 Room)"]
+    locnote4_names = ["Classic Mode - Notebook 4", "Classic Mode - Scissors Pickup (Notebook 4 Room)"]
     if world.options.party:
         locnote4_names.append("Party Mode - Notebook 4 Room Present")
+        locnote4_names.append("Party Mode - Notebook 4")
     if world.options.demo:
         locnote4_names.append("Demo Mode - Item Pickup (Notebook 4 Room)")
+        locnote4_names.append("Demo Mode - Notebook 4")
     regnote4.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote4) for loc_name in locnote4_names]
     multiworld.regions.append(regnote4)
 
     regnote5 = Region("Notebook 5 Room", player, multiworld, "Notebook 5 Room")
-    locnote5_names = ["Notebook 5", "Classic Mode - Big 'Ol Boots Pickup (Notebook 5 Room)"]
+    locnote5_names = ["Classic Mode - Notebook 5", "Classic Mode - Big 'Ol Boots Pickup (Notebook 5 Room)"]
     if world.options.party:
         locnote5_names.append("Party Mode - Notebook 5 Room Present #1")
         locnote5_names.append("Party Mode - Notebook 5 Room Present #2")
+        locnote5_names.append("Party Mode - Notebook 5")
     if world.options.demo:
         locnote5_names.append("Demo Mode - Item Pickup (Notebook 5 Room)")
+        locnote5_names.append("Demo Mode - Notebook 5")
     regnote5.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote5) for loc_name in locnote5_names]
     multiworld.regions.append(regnote5)
 
     regnote6 = Region("Notebook 6 Room", player, multiworld, "Notebook 6 Room")
-    locnote6_names = ["Notebook 6"]
+    locnote6_names = ["Classic Mode - Notebook 6"]
     if world.options.party:
         locnote6_names.append("Party Mode - Notebook 6 Room Present")
+        locnote6_names.append("Party Mode - Notebook 6")
+    if world.options.demo:
+        locnote6_names.append("Demo Mode - Notebook 6")
     regnote6.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote6) for loc_name in locnote6_names]
     multiworld.regions.append(regnote6)
 
     regnote7 = Region("Notebook 7 Room", player, multiworld, "Notebook 7 Room")
-    locnote7_names = ["Notebook 7", "Classic Mode - Scissors Pickup (Notebook 7 Room)"]
+    locnote7_names = ["Classic Mode - Notebook 7", "Classic Mode - Scissors Pickup (Notebook 7 Room)"]
     if world.options.party:
         locnote7_names.append("Party Mode - Notebook 7 Room Present")
+        locnote7_names.append("Party Mode - Notebook 7")
     if world.options.demo:
         locnote7_names.append("Demo Mode - Item Pickup #1 (Notebook 7 Room)")
         locnote7_names.append("Demo Mode - Item Pickup #2 (Notebook 7 Room)")
+        locnote7_names.append("Demo Mode - Notebook 7")
     regnote7.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regnote7) for loc_name in locnote7_names]
     multiworld.regions.append(regnote7)
 
@@ -394,6 +413,26 @@ def create_regions(world):
         multiworld.regions.append(regbook7)
 
     if world.options.party:
+        PartyVar = 1
+    else:
+        PartyVar = 0
+    if world.options.demo:
+        DemoVar = 1
+    else:
+        DemoVar = 0
+    totalStyle = int(DemoVar) + int(PartyVar) + 1
+    if totalStyle > 1:
+        regcomp = Region("Style Complete", player, multiworld, "Style Complete")
+        loccomp_names = ["Classic Style Complete"]
+        if PartyVar == 1:
+            loccomp_names.append("Party Style Complete")
+        if DemoVar == 1:
+            loccomp_names.append("Demo Style Complete")
+        regcomp.locations += [BBCRLocation(player, loc_name, location_table[loc_name], regcomp) for loc_name in
+                                 loccomp_names]
+        multiworld.regions.append(regcomp)
+
+    if world.options.party:
         if world.options.gnotebooks:
             regnote8n9 = Region("Notebook 8 and 9", player, multiworld, "Notebook 8 and 9")
             locnote8n9_names = ["Party Mode - Notebook 8", "Party Mode - Notebook 9"]
@@ -459,7 +498,9 @@ def connect_entrances(world) -> None:
 
     if world.options.party:
         if world.options.gnotebooks:
-            connect(world, "Glitched Notebook Area", "Exit", "Notebook 8 and 9", lambda state: state.has("Party Style", world.player, 1))
+            connect(world, "Glitched Notebook Area", "Exit", "Notebook 8 and 9", lambda state: state.has("Party Style", world.player, 1)
+            and state.has("Green Baldi (Party Style)", world.player, 1) and state.has("Blue Baldi (Party Style)", world.player, 1)
+                    and state.has("Purple Baldi (Party Style)", world.player, 1) and state.has("Orange Baldi (Party Style)", world.player, 1))
             if world.options.notechecks:
                 connect(world, "Notebook 8 and 9 Notebook Connections", "Notebook 8 and 9", "Notebook 8 and 9 Questions")
 
@@ -496,6 +537,7 @@ def connect_entrances(world) -> None:
         connect(world, "Halls to West Exit", "Halls", "West Exit", lambda state: state.has("Notebook", world.player, 7))
         connect(world, "Halls to East Exit", "Halls", "East Exit", lambda state: state.has("Notebook", world.player, 7))
         connect(world, "Starting Halls to South Exit", "Starting Halls", "South Exit", lambda state: state.has("Notebook", world.player, 7))
+
 
 
 
@@ -614,11 +656,15 @@ def connect_entrances(world) -> None:
         connect(world, "SF1 -> Joining Door", "Faculty Room 1 (Near South Exit)", "Joining School Faculty Door", lambda state: state.has("School Faculty Door - Connecting Rooms", world.player))
         connect(world, "SF2 -> Joining Door", "Faculty Room 2 (Near Middle Of School)", "Joining School Faculty Door", lambda state: state.has("School Faculty Door - Connecting Rooms", world.player))
 
+    styleVar = 0
+    if world.options.party:
+        styleVar += 1
+    if world.options.demo:
+        styleVar += 1
 
 
-
-
-
+    if styleVar > 0:
+        connect(world, "Completing of Styles", "Exit", "Style Complete", lambda state: state.has("Notebook", world.player, 7))
 
 
 

@@ -5,13 +5,13 @@ class BBCRLocation(Location):
     game: str = "Baldis Basics Classic Remastered"
 
 location_table = {
-    "Notebook 1": 1,
-    "Notebook 2": 2,
-    "Notebook 3": 3,
-    "Notebook 4": 4,
-    "Notebook 5": 5,
-    "Notebook 6": 6,
-    "Notebook 7": 7,
+    "Classic Mode - Notebook 1": 1,
+    "Classic Mode - Notebook 2": 2,
+    "Classic Mode - Notebook 3": 3,
+    "Classic Mode - Notebook 4": 4,
+    "Classic Mode - Notebook 5": 5,
+    "Classic Mode - Notebook 6": 6,
+    "Classic Mode - Notebook 7": 7,
 
     "Classic Mode - Baldi's Quarter Reward": 8,
 
@@ -179,7 +179,25 @@ location_table = {
     "Notebook 9 Question 2": 130,
     "Notebook 9 Question 3": 131,
 
+    "Classic Style Complete": 132,
+    "Party Style Complete": 133,
+    "Demo Style Complete": 134,
 
+    "Party Mode - Notebook 1": 135,
+    "Party Mode - Notebook 2": 136,
+    "Party Mode - Notebook 3": 137,
+    "Party Mode - Notebook 4": 138,
+    "Party Mode - Notebook 5": 139,
+    "Party Mode - Notebook 6": 140,
+    "Party Mode - Notebook 7": 141,
+
+    "Demo Mode - Notebook 1": 142,
+    "Demo Mode - Notebook 2": 143,
+    "Demo Mode - Notebook 3": 144,
+    "Demo Mode - Notebook 4": 145,
+    "Demo Mode - Notebook 5": 146,
+    "Demo Mode - Notebook 6": 147,
+    "Demo Mode - Notebook 7": 148,
 
 
 }

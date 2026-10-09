@@ -6,7 +6,7 @@ import random
 
 from Options import OptionError
 from Utils import visualize_regions
-from .Options import BBCROptions, option_groups_list  # the options we defined earlier
+from .Options import BBCROptions, option_groups_list, option_presets  # the options we defined earlier
 from .Items import BBCRItem, item_table  # data used below to add items to the World
 from .Locations import BBCRLocation, location_table  # same as above
 from worlds.AutoWorld import World, WebWorld
@@ -19,11 +19,7 @@ from ..generic.Rules import set_rule, add_rule, forbid_item
 class BBCRWeb(WebWorld):
     theme = "stone"
     option_groups = option_groups_list
-    options_presets = {
-        "Baldis Basics Classic Remastered": {
-            "sample_option": True,
-        }
-    }
+    options_presets = option_presets
 
 
 class BBCRWorld(World):
@@ -34,6 +30,7 @@ class BBCRWorld(World):
     # settings: typing.ClassVar[MyGameSettings]  # will be automatically assigned from type hint
     topology_present = False  # show path to required location checks in spoiler
     web = BBCRWeb()
+
 
 
 
@@ -154,6 +151,7 @@ class BBCRWorld(World):
 
 
 
+
         if self.options.req_style == 0:
             if not self.options.doorsanity:
                 self.multiworld.completion_condition[self.player] = lambda state: state.can_reach("Exit", "Region", self.player) and state.has("Notebook", self.player, 7) and state.has("Classic Style", self.player)
@@ -184,6 +182,17 @@ class BBCRWorld(World):
         return Item(name, ItemClassification.progression, self.item_name_to_id[name], self.player)
 
     def create_items(self):
+
+        if self.options.party:
+            PartyVar = 1
+        else:
+            PartyVar = 0
+        if self.options.demo:
+            DemoVar = 1
+        else:
+            DemoVar = 0
+        totalStyle = int(DemoVar) + int(PartyVar) + 1
+
         starting_pool = len(self.multiworld.itempool)
         # print(str(self.options.required_route))
         starting_locations = len(self.multiworld.get_unfilled_locations(self.player))
@@ -627,6 +636,7 @@ class BBCRWorld(World):
             add_rule(self.get_location(str(self.location_id_to_name[8 + empty_variable])),
                      lambda state: state.has("Classic Style", self.player, 1))
             # print(str(self.location_id_to_name[8 + empty_variable]) + " is now locked behind classic")
+            print("added rule to " + str(self.location_id_to_name[8 + empty_variable]))
             empty_variable += 1
 
         if self.options.party:
@@ -636,7 +646,15 @@ class BBCRWorld(World):
                 if empty_variable + 83 != 98:
                     add_rule(self.get_location(str(self.location_id_to_name[83 + empty_variable])),
                              lambda state: state.has("Party Style", self.player, 1))
-                # print(str(self.location_id_to_name[83 + empty_variable]) + " is now locked behind party")
+                print(str(self.location_id_to_name[83 + empty_variable]) + " is now locked behind party")
+                empty_variable += 1
+
+
+            empty_variable = 135
+            print(str(self.location_id_to_name[empty_variable]))
+            while empty_variable != 141:
+                add_rule(self.get_location(str(self.location_id_to_name[empty_variable])), lambda state: state.has("Party Style", self.player, 1))
+                print("added Party Style req to " + str(self.location_id_to_name[empty_variable]))
                 empty_variable += 1
 
         if self.options.demo:
@@ -645,7 +663,15 @@ class BBCRWorld(World):
                 # print(str(self.location_id_to_name[104 + empty_variable]))
                 add_rule(self.get_location(str(self.location_id_to_name[104 + empty_variable])),
                          lambda state: state.has("Demo Style", self.player, 1))
-                # print(str(self.location_id_to_name[104 + empty_variable]) + " is now locked behind demo")
+                print(str(self.location_id_to_name[104 + empty_variable]) + " is now locked behind demo")
+                empty_variable += 1
+
+            empty_variable = 142
+            print(str(self.location_id_to_name[empty_variable]))
+            while empty_variable != 148:
+                add_rule(self.get_location(str(self.location_id_to_name[empty_variable])),
+                         lambda state: state.has("Demo Style", self.player, 1))
+                print("added Demo Style req to " + str(self.location_id_to_name[empty_variable]))
                 empty_variable += 1
 
         bsoda1 = self.get_location("Classic Mode - BSODA Machine (Cafeteria)")
@@ -665,6 +691,14 @@ class BBCRWorld(World):
                 add_rule(self.get_location("Demo Mode - Baldi's Quarter Reward"), lambda state: state.has("Notebook", self.player, 1) and state.has("Demo Style", self.player, 1))
             if self.options.party:
                 add_rule(self.get_location("Party Mode - Baldi's Present Reward"), lambda state: state.has("Notebook", self.player, 1) and state.has("Party Style", self.player, 1))
+
+        if totalStyle > 1:
+            add_rule(self.get_location("Classic Style Complete"), lambda state: state.has("Classic Style", self.player, 1))
+            if self.options.party:
+                add_rule(self.get_location("Party Style Complete"), lambda state: state.has("Party Style", self.player, 1) and state.has("Green Baldi (Party Style)", self.player, 1)
+                and state.has("Blue Baldi (Party Style)", self.player, 1) and state.has("Purple Baldi (Party Style)", self.player, 1) and state.has("Orange Baldi (Party Style)", self.player, 1))
+            if self.options.demo:
+                add_rule(self.get_location("Demo Style Complete"), lambda state: state.has("Demo Style", self.player, 1))
 
         # item usage
         if self.options.item_usage:
@@ -697,6 +731,8 @@ class BBCRWorld(World):
 
             clock_use = self.get_location("Used the Alarm Clock")
             add_rule(clock_use, lambda state: state.has("Alarm Clock", self.player, 1))
+
+
 
             if self.options.itemitem:
                 bupp = 71
