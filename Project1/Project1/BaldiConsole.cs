@@ -16,9 +16,14 @@ public class BaldiConsole : MonoBehaviour
         { "99 Door", "#0063FF"},
         { "Yellow Swinging Door", "#E6FF00"},
         { "School Faculty Door", "#7D2600"},
-        { "(Trap)", "#FF0000"},
-        { "Exit", "#4F4F4F"},
+        { "Trap", "#FF0000"},
+        { "Exit", "#7D2600"},
         { "Baldi", "#0DFF00"},
+        { "Playtime", "#FF0000"},
+        { "Principal", "#332F33"},
+        { "Bully", "#DA6603"},
+        { "Gotta Sweep", "#004800"},
+        { "First Prize", "#0EB8A6"},
     };
 
     private const string FontName = "CCDigitalDeliveryRegular SDF";

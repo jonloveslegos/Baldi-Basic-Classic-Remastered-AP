@@ -52,16 +52,11 @@ public class ArchipelagoHandler : MonoBehaviour
                 "died because they felt like it.",
                 "wasn't welcomed to the schoolhouse.",
                 "got put in detention.",
-                "was swept underneath the floor."
+                "was swept underneath the floor.",
+                "realized that this game is not a manual, and deaths do send.",
+                "most likely forgot where Baldi was."
             ]
         },
-        { "Other", [
-                "failed to get out while they still could.",
-                "died because they felt like it.",
-                "wasn't welcomed to the schoolhouse.",
-                "got put in detention."
-            ]
-        }
     };
     
     public void CreateSession(string server, string slot, string password)
