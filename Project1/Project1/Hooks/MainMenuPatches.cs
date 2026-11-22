@@ -13,6 +13,7 @@ public class MainMenuPatches
     public static void Start(MainMenu __instance)
     {
         GameObject.FindObjectOfType<MainMenu>().transform.Find("Copyright").GetComponent<TextMeshProUGUI>().text = "Made by Grenhunterr, Mewlif and CallmeZero";
+        GameObject.FindObjectOfType<MainMenu>().transform.Find("Copyright").GetComponent<TextMeshProUGUI>().fontSize = 19;
         GameObject.FindObjectOfType<MainMenu>().transform.Find("Version").GetComponent<TextMeshProUGUI>().text = "APv0.0.1";
     }
     

@@ -101,6 +101,11 @@ public class ArchipelagoHandler : MonoBehaviour
 
         if (loginTask.Exception != null)
         {
+            BaldiConsole.Instance.Log(loginTask.Exception.ToString());
+        }
+        
+        if (loginTask.Result.Successful)
+        {
             BaldiConsole.Instance.Log($"Good luck bro");
             var successResult = (LoginSuccessful)loginTask.Result;
             Main.SlotData = new SlotData(successResult.SlotData);
@@ -109,6 +114,7 @@ public class ArchipelagoHandler : MonoBehaviour
             connectionSucceeded = true;
             connectionFinished = true;
             OnConnected?.Invoke();
+            CustomSaveDataHandler.Load();
             yield break;
         }
         
